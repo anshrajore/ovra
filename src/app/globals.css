@@ -10,9 +10,14 @@
   --background-end-rgb: 250, 247, 242;
 }
 
+html,
 body {
+  margin: 0;
+  padding: 0;
+  width: 100%;
+  min-height: 100%;
+  background: #0A0B0D;
   color: rgb(var(--foreground-rgb));
-  background: #FAF7F2;
   font-feature-settings: "cv02", "cv03", "cv04", "cv11";
   -webkit-font-smoothing: antialiased;
 }

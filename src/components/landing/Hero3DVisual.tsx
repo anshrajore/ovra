@@ -2,13 +2,13 @@
 
 export function Hero3DVisual() {
   return (
-    <div className="relative w-full h-[360px] md:h-[420px] flex items-center justify-center select-none overflow-hidden">
+    <div className="relative w-full h-[380px] sm:h-[440px] md:h-[500px] lg:h-[540px] flex items-center justify-center select-none overflow-hidden">
       {/* Background ambient glow */}
-      <div className="absolute -top-10 -right-10 w-72 h-72 bg-gradient-to-br from-amber-400/25 via-pink-400/20 to-purple-500/20 rounded-full blur-3xl pointer-events-none" />
-      <div className="absolute -bottom-10 -left-10 w-72 h-72 bg-gradient-to-tr from-purple-600/25 via-indigo-500/15 to-teal-400/20 rounded-full blur-3xl pointer-events-none" />
+      <div className="absolute -top-10 -right-10 w-80 h-80 bg-gradient-to-br from-amber-400/25 via-pink-400/20 to-purple-500/20 rounded-full blur-3xl pointer-events-none" />
+      <div className="absolute -bottom-10 -left-10 w-80 h-80 bg-gradient-to-tr from-purple-600/25 via-indigo-500/15 to-teal-400/20 rounded-full blur-3xl pointer-events-none" />
 
       {/* 3D Composition Container */}
-      <div className="relative w-[340px] h-[340px] md:w-[400px] md:h-[400px]">
+      <div className="relative w-[340px] h-[340px] sm:w-[400px] sm:h-[400px] md:w-[460px] md:h-[460px] lg:w-[500px] lg:h-[500px]">
         {/* Transparent Glass Block (Top Right) */}
         <div
           className="absolute top-4 right-10 w-24 h-36 rounded-2xl border border-white/50 bg-gradient-to-br from-white/40 via-white/10 to-transparent backdrop-blur-md shadow-lg transform rotate-12 transition-transform duration-700 hover:rotate-6"
