@@ -7,6 +7,7 @@ export function useAppStore() {
   const [, setTick] = useState(0);
 
   useEffect(() => {
+    appStore.init();
     const unsubscribe = appStore.subscribe(() => {
       setTick((t) => t + 1);
     });

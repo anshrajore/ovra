@@ -391,11 +391,17 @@ class AppStore {
     ],
   };
   private listeners: Set<() => void> = new Set();
+  private initialized: boolean = false;
 
   constructor() {
-    if (typeof window !== "undefined") {
-      this.loadFromLocalStorage();
-    }
+    // Defer loading until after initial client mount to guarantee zero SSR hydration mismatches
+  }
+
+  public init() {
+    if (this.initialized || typeof window === "undefined") return;
+    this.initialized = true;
+    this.loadFromLocalStorage();
+    this.notify();
   }
 
   private saveToLocalStorage() {
