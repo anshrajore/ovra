@@ -16,6 +16,8 @@ import {
   ArrowRight,
   Check,
   X,
+  FlaskConical,
+  Terminal,
 } from "lucide-react";
 import { WorkspaceSwitcherDropdown } from "../workspace/WorkspaceSwitcherDropdown";
 
@@ -44,6 +46,9 @@ export function StudioSidebar({
 
   const navItems = [
     { id: "workflows", label: "Workflows", href: "/workflows", icon: Workflow },
+    { id: "ai-studio", label: "AI Studio", href: "/ai-studio", icon: Sparkles },
+    { id: "testlab", label: "TestLab", href: "/testlab", icon: FlaskConical },
+    { id: "developers", label: "Developers", href: "/developers", icon: Terminal },
     { id: "executions", label: "Executions", href: "/executions", icon: PlayCircle },
     { id: "templates", label: "Templates", href: "/templates", icon: LayoutGrid },
     { id: "integrations", label: "Integrations", href: "/integrations", icon: Layers },

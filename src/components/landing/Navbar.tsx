@@ -35,34 +35,34 @@ export function LandingNavbar() {
 
         {/* Navigation Links */}
         <nav className="hidden md:flex items-center gap-5 text-[13px] font-medium text-gray-700">
-          <button className="flex items-center gap-1 hover:text-gray-950 transition-colors">
-            Platform <ChevronDown className="w-3.5 h-3.5 text-gray-400" />
-          </button>
-          <button className="flex items-center gap-1 hover:text-gray-950 transition-colors">
-            Solutions <ChevronDown className="w-3.5 h-3.5 text-gray-400" />
-          </button>
           <Link href="/studio" className="hover:text-gray-950 transition-colors">
+            Studio
+          </Link>
+          <Link href="/ai-studio" className="hover:text-gray-950 transition-colors">
+            AI Studio
+          </Link>
+          <Link href="/testlab" className="hover:text-gray-950 transition-colors">
+            TestLab
+          </Link>
+          <Link href="/developers" className="hover:text-gray-950 transition-colors">
             Developers
           </Link>
-          <Link href="#pricing" className="hover:text-gray-950 transition-colors">
-            Pricing
+          <Link href="/templates" className="hover:text-gray-950 transition-colors">
+            Templates
           </Link>
-          <button className="flex items-center gap-1 hover:text-gray-950 transition-colors">
-            Resources <ChevronDown className="w-3.5 h-3.5 text-gray-400" />
-          </button>
         </nav>
       </div>
 
       {/* Auth & CTA Buttons */}
       <div className="flex items-center gap-3">
         <Link
-          href="/studio"
+          href="/auth/login"
           className="px-4 py-2 text-xs font-semibold text-gray-800 bg-white hover:bg-gray-50 border border-gray-200/90 rounded-full shadow-sm transition-all"
         >
           Sign In
         </Link>
         <Link
-          href="/studio"
+          href="/auth/register"
           className="px-4 py-2 text-xs font-semibold text-gray-950 bg-[#FCD34D] hover:bg-[#FBBF24] rounded-full shadow-sm flex items-center gap-1 transition-all"
         >
           Get Started <ArrowUpRight className="w-3.5 h-3.5" />

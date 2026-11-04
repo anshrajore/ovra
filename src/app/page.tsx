@@ -8,33 +8,40 @@ import {
   BarChart3,
   ArrowUpRight,
   Play,
+  ShieldCheck,
+  Cpu,
+  Database,
+  Terminal,
+  ArrowRight,
+  CheckCircle2,
+  XCircle,
+  HelpCircle,
+  ExternalLink,
+  Lock,
 } from "lucide-react";
 
 export default function LandingPage() {
   return (
-    <main className="w-full min-h-screen lg:h-screen bg-[#0A0B0D] p-2 sm:p-3 md:p-4 flex flex-col justify-center">
-      {/* Outer Device Bezel Frame — Expands to fill full width & full viewport */}
-      <div className="w-full flex-1 min-h-[calc(100vh-1rem)] md:min-h-[calc(100vh-2rem)] bg-[#141519] rounded-[28px] sm:rounded-[36px] md:rounded-[42px] p-1.5 sm:p-2 md:p-2.5 shadow-2xl border border-white/10 flex flex-col justify-between overflow-hidden">
-        {/* Main Inner Card */}
-        <div className="w-full flex-1 bg-[#FAF5EE] rounded-[22px] sm:rounded-[30px] md:rounded-[34px] overflow-hidden flex flex-col justify-between shadow-inner">
+    <main className="w-full min-h-screen bg-[#0A0B0D] p-2 sm:p-3 md:p-4 flex flex-col justify-start">
+      {/* Outer Device Bezel Frame */}
+      <div className="w-full bg-[#141519] rounded-[28px] sm:rounded-[36px] md:rounded-[42px] p-1.5 sm:p-2 md:p-2.5 shadow-2xl border border-white/10 flex flex-col overflow-hidden">
+        {/* Main Inner Hero Card */}
+        <div className="w-full bg-[#FAF5EE] rounded-[22px] sm:rounded-[30px] md:rounded-[34px] overflow-hidden flex flex-col justify-between shadow-inner">
           {/* Top Navigation */}
           <LandingNavbar />
 
-          {/* Hero Section — Fills available vertical space and centers content */}
-          <div className="flex-1 px-6 sm:px-10 md:px-14 lg:px-20 py-6 md:py-8 grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-center">
+          {/* Hero Section */}
+          <div className="px-6 sm:px-10 md:px-14 lg:px-20 py-8 md:py-12 grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-center">
             {/* Left Content (7 cols) */}
             <div className="lg:col-span-7 flex flex-col justify-center">
-              {/* Category Pill Tag */}
               <span className="text-[11px] sm:text-xs font-bold tracking-[0.2em] uppercase text-gray-500 mb-3 sm:mb-4">
-                Workflow Automation Platform
+                Decoupled Node Automation & AI Orchestration
               </span>
 
-              {/* Main Headline */}
               <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-[68px] font-black tracking-tight text-gray-950 leading-[1.05] mb-5">
                 Build, Automate and Scale with OVRA
               </h1>
 
-              {/* Description */}
               <p className="text-base sm:text-lg md:text-xl text-gray-700 max-w-2xl font-normal leading-relaxed mb-8">
                 The open workflow automation platform to connect your tools,
                 build intelligent workflows, and run AI-powered automations at scale.
@@ -43,7 +50,7 @@ export default function LandingPage() {
               {/* Action Buttons */}
               <div className="flex flex-wrap items-center gap-4 mb-10">
                 <Link
-                  href="/studio"
+                  href="/auth/register"
                   className="px-7 py-3.5 bg-gray-950 hover:bg-gray-800 text-white font-semibold text-sm md:text-base rounded-full shadow-lg hover:shadow-xl transition-all flex items-center gap-2 group"
                 >
                   Get Started Free
@@ -54,7 +61,7 @@ export default function LandingPage() {
                   href="/studio"
                   className="px-7 py-3.5 bg-white hover:bg-gray-50 border border-gray-300 text-gray-900 font-semibold text-sm md:text-base rounded-full shadow-sm transition-all flex items-center gap-2"
                 >
-                  Explore Platform
+                  Launch Studio
                   <Play className="w-3.5 h-3.5 fill-gray-900 text-gray-900" />
                 </Link>
               </div>
@@ -62,58 +69,50 @@ export default function LandingPage() {
               {/* 4 Feature Badges */}
               <div className="grid grid-cols-2 sm:grid-cols-4 gap-6 pt-6 border-t border-gray-200/80">
                 <div className="flex flex-col gap-1.5">
-                  <div className="text-gray-900">
-                    <Zap className="w-4 h-4 text-gray-900" />
-                  </div>
+                  <Zap className="w-4 h-4 text-gray-900" />
                   <span className="text-xs md:text-sm font-semibold text-gray-900 leading-tight">
-                    Automate Workflows
+                    Durable DAGs
                   </span>
                 </div>
 
                 <div className="flex flex-col gap-1.5">
-                  <div className="text-gray-900">
-                    <Layers className="w-4 h-4 text-gray-900" />
-                  </div>
+                  <Layers className="w-4 h-4 text-gray-900" />
                   <span className="text-xs md:text-sm font-semibold text-gray-900 leading-tight">
-                    Integrate Your Tools
+                    500+ Connectors
                   </span>
                 </div>
 
                 <div className="flex flex-col gap-1.5">
-                  <div className="text-gray-900">
-                    <Sparkles className="w-4 h-4 text-gray-900" />
-                  </div>
+                  <Sparkles className="w-4 h-4 text-gray-900" />
                   <span className="text-xs md:text-sm font-semibold text-gray-900 leading-tight">
-                    Build with AI
+                    Multi-Model AI
                   </span>
                 </div>
 
                 <div className="flex flex-col gap-1.5">
-                  <div className="text-gray-900">
-                    <BarChart3 className="w-4 h-4 text-gray-900" />
-                  </div>
+                  <BarChart3 className="w-4 h-4 text-gray-900" />
                   <span className="text-xs md:text-sm font-semibold text-gray-900 leading-tight">
-                    Scale Effortlessly
+                    Tenant RLS Isolation
                   </span>
                 </div>
               </div>
             </div>
 
-            {/* Right Visual 3D Showcase (5 cols) */}
+            {/* Right Visual 3D Showcase */}
             <div className="lg:col-span-5 flex justify-center items-center">
               <Hero3DVisual />
             </div>
           </div>
 
-          {/* Bottom Dark Statistics Shelf Bar */}
+          {/* Bottom Shelf */}
           <div className="bg-[#121316] text-white px-6 sm:px-10 md:px-14 lg:px-20 py-4 md:py-5 flex flex-wrap items-center justify-between gap-6 border-t border-white/5">
             <div className="flex flex-wrap items-center gap-6 sm:gap-10 md:gap-16">
               <div>
                 <div className="text-xl sm:text-2xl md:text-3xl font-bold tracking-tight text-white">
-                  10K+
+                  34+
                 </div>
                 <div className="text-[11px] sm:text-xs text-gray-400 font-medium">
-                  Active Workflows
+                  Supabase Tables
                 </div>
               </div>
 
@@ -121,10 +120,10 @@ export default function LandingPage() {
 
               <div>
                 <div className="text-xl sm:text-2xl md:text-3xl font-bold tracking-tight text-white">
-                  500+
+                  15
                 </div>
                 <div className="text-[11px] sm:text-xs text-gray-400 font-medium">
-                  Integrations
+                  Foundation Nodes
                 </div>
               </div>
 
@@ -132,10 +131,10 @@ export default function LandingPage() {
 
               <div>
                 <div className="text-xl sm:text-2xl md:text-3xl font-bold tracking-tight text-white">
-                  50K+
+                  AES-256
                 </div>
                 <div className="text-[11px] sm:text-xs text-gray-400 font-medium">
-                  Builders
+                  Envelope Encryption
                 </div>
               </div>
 
@@ -146,23 +145,284 @@ export default function LandingPage() {
                   99.9%
                 </div>
                 <div className="text-[11px] sm:text-xs text-gray-400 font-medium">
-                  Platform Uptime
+                  Uptime Target
                 </div>
               </div>
             </div>
 
-            {/* Watch Overview Button */}
             <Link
-              href="/studio"
+              href="/testlab"
               className="flex items-center gap-2.5 text-xs md:text-sm font-semibold text-gray-300 hover:text-white transition-colors group"
             >
               <div className="w-8 h-8 rounded-full border border-white/20 flex items-center justify-center group-hover:scale-105 group-hover:border-white transition-all">
                 <Play className="w-3.5 h-3.5 fill-current ml-0.5" />
               </div>
-              <span>Watch 2-min Overview</span>
+              <span>Explore TestLab Simulator</span>
             </Link>
           </div>
         </div>
+
+        {/* Section 2: Why Traditional Automation Breaks vs The OVRA Standard */}
+        <div className="px-6 sm:px-12 py-16 max-w-6xl mx-auto w-full space-y-10">
+          <div className="text-center space-y-3">
+            <span className="text-xs font-bold text-amber-400 uppercase tracking-widest">
+              The Architecture Shift
+            </span>
+            <h2 className="text-3xl sm:text-4xl font-black text-white tracking-tight">
+              Why Traditional Automation Platforms Break
+            </h2>
+            <p className="text-sm text-gray-400 max-w-2xl mx-auto leading-relaxed">
+              Legacy tools rely on arbitrary in-memory execution, untyped JavaScript evals, and unencrypted credentials. OVRA establishes an enterprise-grade sovereign execution standard.
+            </p>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            {/* Legacy Box */}
+            <div className="p-8 rounded-3xl bg-red-950/10 border border-red-500/20 space-y-5">
+              <div className="flex items-center gap-2.5 text-red-400 font-bold text-sm uppercase tracking-wider">
+                <XCircle className="w-5 h-5" />
+                <span>Legacy Automation Tools</span>
+              </div>
+              <ul className="space-y-3 text-xs text-gray-300">
+                <li className="flex items-start gap-2">
+                  <span className="text-red-400 font-bold">•</span>
+                  <span><strong>Arbitrary Code Evaluation:</strong> Runs unconstrained `eval()` risking server crashes and SSRF vulnerabilities.</span>
+                </li>
+                <li className="flex items-start gap-2">
+                  <span className="text-red-400 font-bold">•</span>
+                  <span><strong>Hardcoded Nodes:</strong> Adding new connectors requires modifying core frontend files.</span>
+                </li>
+                <li className="flex items-start gap-2">
+                  <span className="text-red-400 font-bold">•</span>
+                  <span><strong>Plaintext API Keys:</strong> Tokens stored in plain database columns or logged into telemetry outputs.</span>
+                </li>
+                <li className="flex items-start gap-2">
+                  <span className="text-red-400 font-bold">•</span>
+                  <span><strong>Payload Overflow Failures:</strong> Step outputs &gt;50 KiB exhaust worker memory and abort executions.</span>
+                </li>
+              </ul>
+            </div>
+
+            {/* OVRA Box */}
+            <div className="p-8 rounded-3xl bg-amber-400/5 border border-amber-400/30 space-y-5">
+              <div className="flex items-center gap-2.5 text-amber-400 font-bold text-sm uppercase tracking-wider">
+                <CheckCircle2 className="w-5 h-5" />
+                <span>The OVRA Engine Standard</span>
+              </div>
+              <ul className="space-y-3 text-xs text-gray-300">
+                <li className="flex items-start gap-2">
+                  <span className="text-amber-400 font-bold">•</span>
+                  <span><strong>Zero Arbitrary Eval:</strong> Pure JSON Schema input/output contracts with sandboxed AST expression evaluation.</span>
+                </li>
+                <li className="flex items-start gap-2">
+                  <span className="text-amber-400 font-bold">•</span>
+                  <span><strong>Decoupled Versioned Registry:</strong> 15 foundation nodes and dynamic OpenAPI 3.0 import without touching source code.</span>
+                </li>
+                <li className="flex items-start gap-2">
+                  <span className="text-amber-400 font-bold">•</span>
+                  <span><strong>AES-256-GCM Envelope Encryption:</strong> Scoped credential leasing with time-limited tokens and zero plaintext logging.</span>
+                </li>
+                <li className="flex items-start gap-2">
+                  <span className="text-amber-400 font-bold">•</span>
+                  <span><strong>Supabase Storage Offload:</strong> Automatic chunk offloading for outputs &gt;64 KiB with signed URL references.</span>
+                </li>
+              </ul>
+            </div>
+          </div>
+        </div>
+
+        {/* Section 3: Interactive How It Works */}
+        <div className="px-6 sm:px-12 py-16 border-t border-white/5 max-w-6xl mx-auto w-full space-y-12">
+          <div className="text-center space-y-3">
+            <span className="text-xs font-bold text-amber-400 uppercase tracking-widest">
+              Execution Lifecycle
+            </span>
+            <h2 className="text-3xl sm:text-4xl font-black text-white tracking-tight">
+              How OVRA Powers Complex Workflows
+            </h2>
+            <p className="text-sm text-gray-400 max-w-xl mx-auto">
+              From inbound event reception to AI classification, transactional side-effects, and audit trail logging.
+            </p>
+          </div>
+
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+            <div className="p-6 rounded-2xl bg-white/5 border border-white/10 space-y-3">
+              <div className="w-10 h-10 rounded-xl bg-amber-400/10 text-amber-400 flex items-center justify-center font-bold text-sm">
+                01
+              </div>
+              <h3 className="font-bold text-sm text-white">Trigger & Ingest</h3>
+              <p className="text-xs text-gray-400 leading-relaxed">
+                Receive events via HMAC-verified webhooks, cron intervals, or manual user requests with automated anti-replay protection.
+              </p>
+            </div>
+
+            <div className="p-6 rounded-2xl bg-white/5 border border-white/10 space-y-3">
+              <div className="w-10 h-10 rounded-xl bg-amber-400/10 text-amber-400 flex items-center justify-center font-bold text-sm">
+                02
+              </div>
+              <h3 className="font-bold text-sm text-white">Route & Reason</h3>
+              <p className="text-xs text-gray-400 leading-relaxed">
+                Evaluate deterministic boolean logic, branch conditions, or pass context to Gemini 2.5 Flash for real-time AI reasoning.
+              </p>
+            </div>
+
+            <div className="p-6 rounded-2xl bg-white/5 border border-white/10 space-y-3">
+              <div className="w-10 h-10 rounded-xl bg-amber-400/10 text-amber-400 flex items-center justify-center font-bold text-sm">
+                03
+              </div>
+              <h3 className="font-bold text-sm text-white">Act & Dispatch</h3>
+              <p className="text-xs text-gray-400 leading-relaxed">
+                Execute external side effects with leased credentials across PostgreSQL, Google Sheets, Slack, and custom microservices.
+              </p>
+            </div>
+
+            <div className="p-6 rounded-2xl bg-white/5 border border-white/10 space-y-3">
+              <div className="w-10 h-10 rounded-xl bg-amber-400/10 text-amber-400 flex items-center justify-center font-bold text-sm">
+                04
+              </div>
+              <h3 className="font-bold text-sm text-white">Observe & Audit</h3>
+              <p className="text-xs text-gray-400 leading-relaxed">
+                Stream real-time monotonic sequence telemetry to the studio canvas and record permanent immutable audit log records.
+              </p>
+            </div>
+          </div>
+        </div>
+
+        {/* Section 4: Developer Hub CTA Banner */}
+        <div className="px-6 sm:px-12 py-12 max-w-6xl mx-auto w-full">
+          <div className="p-8 sm:p-12 rounded-3xl bg-gradient-to-r from-[#181A20] to-[#121418] border border-white/10 flex flex-col md:flex-row items-center justify-between gap-8">
+            <div className="space-y-3 max-w-xl">
+              <div className="flex items-center gap-2 text-xs font-bold text-amber-400 uppercase tracking-wider">
+                <Terminal className="w-4 h-4" />
+                <span>Engineered for Developers</span>
+              </div>
+              <h3 className="text-2xl sm:text-3xl font-black text-white tracking-tight">
+                Inspect the API Playground & Generate Scoped Keys
+              </h3>
+              <p className="text-xs sm:text-sm text-gray-400 leading-relaxed">
+                Test live REST endpoints, simulate failure injection in TestLab, or design custom agent personas in AI Studio.
+              </p>
+            </div>
+
+            <div className="flex flex-col sm:flex-row items-center gap-3 w-full md:w-auto">
+              <Link
+                href="/developers"
+                className="w-full sm:w-auto px-6 py-3 rounded-full bg-amber-400 hover:bg-amber-300 text-black font-bold text-xs shadow-md shadow-amber-500/20 flex items-center justify-center gap-2 transition-all"
+              >
+                <span>Developer Portal</span>
+                <ArrowRight className="w-4 h-4" />
+              </Link>
+              <Link
+                href="/ai-studio"
+                className="w-full sm:w-auto px-6 py-3 rounded-full bg-white/10 hover:bg-white/15 text-white font-semibold text-xs flex items-center justify-center gap-2 transition-all"
+              >
+                <span>AI Studio</span>
+                <Sparkles className="w-4 h-4 text-amber-400" />
+              </Link>
+            </div>
+          </div>
+        </div>
+
+        {/* Section 5: FAQ Accordion */}
+        <div className="px-6 sm:px-12 py-16 border-t border-white/5 max-w-4xl mx-auto w-full space-y-8">
+          <div className="text-center space-y-2">
+            <h2 className="text-2xl sm:text-3xl font-black text-white tracking-tight">
+              Frequently Asked Questions
+            </h2>
+            <p className="text-xs text-gray-400">Everything you need to know about the OVRA platform and runtime architecture.</p>
+          </div>
+
+          <div className="space-y-4 text-xs">
+            <div className="p-5 rounded-2xl bg-white/5 border border-white/10 space-y-2">
+              <h4 className="font-bold text-white text-sm">How does tenant isolation work with Supabase PostgreSQL?</h4>
+              <p className="text-gray-400 leading-relaxed">
+                All 34 core tables implement PostgreSQL Row-Level Security (RLS). Database queries set session context via `ovra.workspace_id` ensuring a query executed by Workspace A can never read, modify, or leak data belonging to Workspace B.
+              </p>
+            </div>
+
+            <div className="p-5 rounded-2xl bg-white/5 border border-white/10 space-y-2">
+              <h4 className="font-bold text-white text-sm">What happens if a node output payload exceeds 64 KiB?</h4>
+              <p className="text-gray-400 leading-relaxed">
+                The OVRA Storage Provider automatically uploads oversized JSON or binary payloads to private Supabase Storage buckets and replaces the step output with a storage pointer reference (`storage://...`). Downstream nodes read this reference seamlessly.
+              </p>
+            </div>
+
+            <div className="p-5 rounded-2xl bg-white/5 border border-white/10 space-y-2">
+              <h4 className="font-bold text-white text-sm">Can I import my existing OpenAPI / Swagger specifications?</h4>
+              <p className="text-gray-400 leading-relaxed">
+                Yes. Using the OpenAPI Importer in Canvas Studio or API route `/api/v1/connectors/openapi/import`, you can parse any OpenAPI 3.0 JSON or YAML document to automatically generate type-safe node operations.
+              </p>
+            </div>
+          </div>
+        </div>
+
+        {/* Comprehensive Multi-Column Footer */}
+        <footer className="border-t border-white/10 bg-[#0E0F12] px-6 sm:px-12 py-12 text-xs">
+          <div className="max-w-6xl mx-auto grid grid-cols-2 md:grid-cols-4 gap-8 mb-12">
+            {/* Brand */}
+            <div className="col-span-2 md:col-span-1 space-y-3">
+              <div className="flex items-center gap-2">
+                <div className="w-6 h-6 rounded-md bg-amber-400 flex items-center justify-center font-black text-black text-xs">
+                  O
+                </div>
+                <span className="font-bold text-white tracking-tight">OVRA Automation</span>
+              </div>
+              <p className="text-gray-400 text-[11px] leading-relaxed">
+                India&apos;s sovereign workflow automation and AI orchestration platform.
+              </p>
+              <div className="text-gray-500 text-[11px]">
+                Built with pride by Ansh Rajore.
+              </div>
+            </div>
+
+            {/* Product */}
+            <div className="space-y-2.5">
+              <div className="font-bold text-white uppercase tracking-wider text-[11px]">Product</div>
+              <ul className="space-y-1.5 text-gray-400">
+                <li><Link href="/studio" className="hover:text-white transition-colors">Studio Canvas</Link></li>
+                <li><Link href="/workflows" className="hover:text-white transition-colors">Workflows</Link></li>
+                <li><Link href="/executions" className="hover:text-white transition-colors">Execution Telemetry</Link></li>
+                <li><Link href="/templates" className="hover:text-white transition-colors">Templates Marketplace</Link></li>
+                <li><Link href="/integrations" className="hover:text-white transition-colors">Integrations Catalog</Link></li>
+                <li><Link href="/credentials" className="hover:text-white transition-colors">Credential Vault</Link></li>
+              </ul>
+            </div>
+
+            {/* Advanced Engines */}
+            <div className="space-y-2.5">
+              <div className="font-bold text-white uppercase tracking-wider text-[11px]">Engineering</div>
+              <ul className="space-y-1.5 text-gray-400">
+                <li><Link href="/ai-studio" className="hover:text-white transition-colors">AI Studio Workbench</Link></li>
+                <li><Link href="/testlab" className="hover:text-white transition-colors">TestLab Simulator</Link></li>
+                <li><Link href="/developers" className="hover:text-white transition-colors">Developer Portal</Link></li>
+                <li><Link href="/developers/api-keys" className="hover:text-white transition-colors">API Keys</Link></li>
+                <li><Link href="/developers/api-playground" className="hover:text-white transition-colors">API Playground</Link></li>
+                <li><Link href="/developers/webhooks" className="hover:text-white transition-colors">Webhooks & HMAC</Link></li>
+              </ul>
+            </div>
+
+            {/* Legal & Compliance */}
+            <div className="space-y-2.5">
+              <div className="font-bold text-white uppercase tracking-wider text-[11px]">Legal & Trust</div>
+              <ul className="space-y-1.5 text-gray-400">
+                <li><Link href="/terms" className="hover:text-white transition-colors">Terms of Service</Link></li>
+                <li><Link href="/privacy" className="hover:text-white transition-colors">Privacy Notice (DPDP)</Link></li>
+                <li><Link href="/acceptable-use" className="hover:text-white transition-colors">Acceptable Use Policy</Link></li>
+                <li><Link href="/cookies" className="hover:text-white transition-colors">Cookie Policy</Link></li>
+                <li><Link href="/dpa" className="hover:text-white transition-colors">Data Processing Addendum</Link></li>
+              </ul>
+            </div>
+          </div>
+
+          <div className="max-w-6xl mx-auto pt-6 border-t border-white/5 flex flex-col sm:flex-row items-center justify-between gap-4 text-gray-500 text-[11px]">
+            <div>© 2026 OVRA. All rights reserved. Registered Indian Sovereign Automation Platform.</div>
+            <div className="flex items-center gap-4">
+              <Link href="/auth/login" className="hover:text-gray-300">Sign In</Link>
+              <Link href="/auth/register" className="hover:text-gray-300">Register</Link>
+              <Link href="/onboarding" className="hover:text-gray-300">Onboarding Wizard</Link>
+            </div>
+          </div>
+        </footer>
       </div>
     </main>
   );
