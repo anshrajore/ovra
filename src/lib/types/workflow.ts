@@ -1,19 +1,30 @@
 export type NodeType =
   | "core.webhook"
+  | "core.manual_trigger"
+  | "core.schedule"
+  | "core.http_request"
   | "ai.agent"
+  | "ai.model"
   | "logic.if"
+  | "logic.switch"
+  | "logic.merge"
+  | "logic.loop"
+  | "data.set_fields"
+  | "data.json_parser"
   | "comm.slack"
   | "comm.email"
   | "comm.whatsapp"
   | "finance.razorpay"
   | "db.postgres"
-  | "google.sheets";
+  | "google.sheets"
+  | "app.google_sheets"
+  | (string & {});
 
 export interface WorkflowNodeData {
   id: string;
   type: NodeType;
   label: string;
-  subtitle: string;
+  subtitle?: string;
   icon?: string;
   status?: "idle" | "running" | "success" | "failed" | "skipped";
   config?: Record<string, unknown>;

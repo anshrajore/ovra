@@ -21,3 +21,6 @@ export interface StorageProvider {
 
   getObject(key: string): Promise<Buffer | null>;
 }
+
+export { supabaseStorageProvider } from "./supabase-storage";
+

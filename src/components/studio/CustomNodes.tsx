@@ -332,10 +332,114 @@ export const EmailNode = memo(({ data }: { data: BaseNodeData }) => {
 });
 EmailNode.displayName = "EmailNode";
 
-export const nodeTypes = {
+// 6. Universal Node for all Foundation and Dynamic OpenAPI Nodes
+export const UniversalCanvasNode = memo(({ id, type, data }: { id: string; type: string; data: BaseNodeData }) => {
+  const isRunning = data.status === "running";
+  const isSuccess = data.status === "success";
+  const isFailed = data.status === "failed";
+  const isSkipped = data.status === "skipped";
+
+  // Determine kind from node type
+  const isTrigger = type.includes("trigger") || type.includes("webhook") || type.includes("schedule");
+  const isLogic = type.includes("logic") || type.includes("switch") || type.includes("if");
+  const isAi = type.includes("ai") || type.includes("model") || type.includes("agent");
+  const isData = type.includes("data") || type.includes("json") || type.includes("fields");
+  const isDb = type.includes("db") || type.includes("postgres") || type.includes("sheets");
+
+  // Determine accent color and border
+  const getTheme = () => {
+    if (isTrigger) return { bg: "bg-[#FFF5ED]", border: "border-orange-200/80", text: "text-ovra-orange", ring: "ring-ovra-orange/15" };
+    if (isAi) return { bg: "bg-[#F6F2FF]", border: "border-purple-200/80", text: "text-purple-600", ring: "ring-purple-500/15" };
+    if (isLogic) return { bg: "bg-[#FFFBEB]", border: "border-amber-200/80", text: "text-amber-600", ring: "ring-amber-500/15" };
+    if (isDb) return { bg: "bg-[#EFF6FF]", border: "border-blue-200/80", text: "text-blue-600", ring: "ring-blue-500/15" };
+    if (isData) return { bg: "bg-[#ECFDF5]", border: "border-emerald-200/80", text: "text-emerald-600", ring: "ring-emerald-500/15" };
+    return { bg: "bg-gray-50", border: "border-gray-200", text: "text-gray-700", ring: "ring-gray-300" };
+  };
+
+  const theme = getTheme();
+
+  return (
+    <div
+      className={`relative px-4 py-3 bg-white rounded-2xl border transition-all duration-300 min-w-[210px] shadow-soft select-none ${
+        isSkipped
+          ? "opacity-40 grayscale border-dashed border-gray-300"
+          : isRunning
+          ? `border-ovra-orange ring-4 ${theme.ring} shadow-md`
+          : isSuccess
+          ? "border-emerald-400 ring-2 ring-emerald-100"
+          : isFailed
+          ? "border-rose-400 ring-2 ring-rose-100"
+          : "border-gray-200/90 hover:border-gray-300"
+      }`}
+    >
+      {/* Input Handle (if not trigger) */}
+      {!isTrigger && (
+        <Handle
+          type="target"
+          position={Position.Left}
+          className="!w-2.5 !h-2.5 !bg-gray-400 !border-2 !border-white hover:!bg-ovra-orange"
+        />
+      )}
+
+      <div className="flex items-center gap-3">
+        {/* Left Circular Icon Badge */}
+        <div className={`w-10 h-10 rounded-full ${theme.bg} border ${theme.border} flex items-center justify-center shrink-0`}>
+          <Zap className={`w-4 h-4 ${theme.text}`} />
+        </div>
+
+        {/* Content */}
+        <div className="flex flex-col">
+          <div className="flex items-center gap-1.5">
+            <span className="text-xs font-bold text-gray-950 tracking-tight">
+              {data.label || type}
+            </span>
+            {isSuccess && <CheckCircle2 className="w-3.5 h-3.5 text-emerald-600" />}
+            {isFailed && <XCircle className="w-3.5 h-3.5 text-rose-600" />}
+            {isRunning && <Loader2 className="w-3.5 h-3.5 text-ovra-orange animate-spin" />}
+          </div>
+          <span className="text-[11px] text-gray-500 font-medium truncate max-w-[130px]">
+            {data.subtitle || type}
+          </span>
+        </div>
+      </div>
+
+      {/* Output Handle */}
+      <Handle
+        type="source"
+        position={Position.Right}
+        className="!w-2.5 !h-2.5 !bg-gray-400 !border-2 !border-white hover:!bg-ovra-orange"
+      />
+    </div>
+  );
+});
+UniversalCanvasNode.displayName = "UniversalCanvasNode";
+
+const baseNodeTypes: Record<string, any> = {
   "core.webhook": WebhookNode,
   "ai.agent": AIAgentNode,
   "logic.if": IFNode,
   "comm.slack": SlackNode,
   "comm.email": EmailNode,
+  "core.manual_trigger": UniversalCanvasNode,
+  "core.schedule": UniversalCanvasNode,
+  "core.http_request": UniversalCanvasNode,
+  "logic.switch": UniversalCanvasNode,
+  "logic.merge": UniversalCanvasNode,
+  "logic.loop": UniversalCanvasNode,
+  "data.set_fields": UniversalCanvasNode,
+  "data.json_parser": UniversalCanvasNode,
+  "ai.model": UniversalCanvasNode,
+  "app.google_sheets": UniversalCanvasNode,
+  "db.postgres": UniversalCanvasNode,
 };
+
+// Proxy to guarantee any custom connector or OpenAPI node dynamically renders without React Flow errors
+export const nodeTypes = new Proxy(baseNodeTypes, {
+  get: (target, prop: string) => {
+    if (prop in target) {
+      return target[prop];
+    }
+    return UniversalCanvasNode;
+  },
+});
+

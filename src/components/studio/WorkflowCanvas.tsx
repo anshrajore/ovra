@@ -22,10 +22,12 @@ import { FloatingToolbar } from "./FloatingToolbar";
 import { NodeInspectorModal } from "./NodeInspectorModal";
 import { CodeModal } from "./CodeModal";
 import { AIStudioModal } from "./AIStudioModal";
-import { NodeLibraryModal } from "./NodeLibraryModal";
+import { UniversalNodePickerModal } from "./UniversalNodePickerModal";
+import { OpenAPIImportModal } from "./OpenAPIImportModal";
 import { CanvasHeader } from "./CanvasHeader";
 import { WorkflowDefinition, WorkflowNodeData } from "@/lib/types/workflow";
 import { defaultExecutionProvider } from "@/lib/simulator/engine";
+import { testNodeExecution } from "@/lib/node-platform";
 import { appStore } from "@/lib/store/app-store";
 
 interface WorkflowCanvasProps {
@@ -50,6 +52,7 @@ export function WorkflowCanvas({ initialWorkflow }: WorkflowCanvasProps) {
   const [isCodeModalOpen, setIsCodeModalOpen] = useState(false);
   const [isAIStudioOpen, setIsAIStudioOpen] = useState(false);
   const [isNodeLibraryOpen, setIsNodeLibraryOpen] = useState(false);
+  const [isOpenOpenAPIModal, setIsOpenOpenAPIModal] = useState(false);
   const [isRunning, setIsRunning] = useState(false);
   const [saveStatus, setSaveStatus] = useState<"saved" | "saving" | "unsaved">("saved");
 
@@ -264,31 +267,48 @@ export function WorkflowCanvas({ initialWorkflow }: WorkflowCanvasProps) {
     []
   );
 
-  // Run Single Node Solo Test
+  // Run Single Node Solo Test via Platform Engine
   const handleRunSoloNode = useCallback(
     async (nodeId: string) => {
       setNodes((nds) =>
         nds.map((n) => (n.id === nodeId ? { ...n, data: { ...n.data, status: "running" } } : n))
       );
 
-      // Simulate step duration & execution output
-      await new Promise((res) => setTimeout(res, 600));
+      const targetNode = workflow.nodes.find((n) => n.id === nodeId);
+      const startTime = Date.now();
+      let outputs: Record<string, any> = {};
+      let isSuccess = true;
 
-      const mockOutputs: Record<string, any> = {
-        stepId: nodeId,
-        timestamp: new Date().toISOString(),
-        status: "success",
-        processed: true,
-        data: {
-          evaluatedAt: Date.now(),
-          details: "Single node solo test completed successfully with mock payload",
-        },
-      };
+      try {
+        const mockInput = targetNode?.inputs && Object.keys(targetNode.inputs).length > 0
+          ? targetNode.inputs
+          : {
+              orderId: "ORD_7891",
+              amount: 14500,
+              customer: { name: "Ananya Iyer", email: "ananya.iyer@fintech.in" },
+              event: "payment_authorized",
+              timestamp: new Date().toISOString(),
+            };
+
+        const res = await testNodeExecution(
+          targetNode?.type || "core.webhook",
+          mockInput,
+          targetNode?.config || {}
+        );
+
+        outputs = res.output || {};
+        isSuccess = res.success;
+      } catch (err: any) {
+        outputs = { error: err.message || "Node execution failed" };
+        isSuccess = false;
+      }
+
+      const durationMs = Math.max(Date.now() - startTime, 35);
 
       setNodes((nds) =>
         nds.map((n) =>
           n.id === nodeId
-            ? { ...n, data: { ...n.data, status: "success", durationMs: 42 } }
+            ? { ...n, data: { ...n.data, status: isSuccess ? "success" : "failed", durationMs } }
             : n
         )
       );
@@ -299,16 +319,16 @@ export function WorkflowCanvas({ initialWorkflow }: WorkflowCanvasProps) {
           n.id === nodeId
             ? {
                 ...n,
-                status: "success",
+                status: isSuccess ? "success" : "failed",
                 inputs: { mode: "solo_test_trigger", triggeredBy: "NodeInspector" },
-                outputs: mockOutputs,
-                executionDurationMs: 42,
+                outputs,
+                executionDurationMs: durationMs,
               }
             : n
         ),
       }));
     },
-    [setNodes]
+    [setNodes, workflow.nodes]
   );
 
   // Keyboard shortcut listener
@@ -762,11 +782,25 @@ export function WorkflowCanvas({ initialWorkflow }: WorkflowCanvasProps) {
         onApplyWorkflow={handleApplyWorkflow}
       />
 
-      {/* Node Library Drawer */}
-      <NodeLibraryModal
+      {/* Universal Node Picker Modal */}
+      <UniversalNodePickerModal
         isOpen={isNodeLibraryOpen}
         onClose={() => setIsNodeLibraryOpen(false)}
         onAddNode={handleAddNode}
+        onOpenOpenAPIImport={() => {
+          setIsNodeLibraryOpen(false);
+          setIsOpenOpenAPIModal(true);
+        }}
+      />
+
+      {/* OpenAPI 3.0 / 3.1 Importer Modal */}
+      <OpenAPIImportModal
+        isOpen={isOpenOpenAPIModal}
+        onClose={() => setIsOpenOpenAPIModal(false)}
+        onImportComplete={(connectorName, count) => {
+          setIsOpenOpenAPIModal(false);
+          setIsNodeLibraryOpen(true);
+        }}
       />
     </div>
   );

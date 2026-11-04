@@ -13,11 +13,14 @@ export interface CredentialLease {
 export interface CredentialProvider {
   encryptSecret(
     secret: Record<string, string>,
-    metadata: { organizationId: string; workspaceId: string }
-  ): Promise<{ ciphertext: string; dekCiphertext: string }>;
+    metadata: { organizationId?: string; workspaceId: string }
+  ): Promise<{ ciphertext: string; dekCiphertext: string; maskedKey?: string }>;
 
   acquireLease(
     credentialId: string,
-    context: { executionId: string; nodeId: string }
+    context: { executionId?: string; nodeId?: string; workspaceId?: string; userId?: string }
   ): Promise<CredentialLease>;
 }
+
+export { credentialBroker } from "../security/credential-broker";
+

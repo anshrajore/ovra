@@ -20,6 +20,8 @@ import {
   Check,
 } from "lucide-react";
 import { WorkflowNodeData } from "@/lib/types/workflow";
+import { nodeRegistry, SchemaHelper } from "@/lib/node-platform";
+import { DynamicNodeConfigForm } from "./DynamicNodeConfigForm";
 
 interface NodeInspectorModalProps {
   node: WorkflowNodeData | null;
@@ -45,7 +47,11 @@ export function NodeInspectorModal({
 
   useEffect(() => {
     if (node) {
-      setConfig(node.config || getDefaultConfig(node.type));
+      const def = nodeRegistry.getNode(node.type);
+      const defaultConfig = def?.manifest.configSchema
+        ? SchemaHelper.getDefaultConfig(def.manifest.configSchema)
+        : getDefaultConfig(node.type);
+      setConfig(node.config && Object.keys(node.config).length > 0 ? node.config : defaultConfig);
     }
   }, [node]);
 
@@ -195,11 +201,19 @@ export function NodeInspectorModal({
         {/* Tab 1: Parameters Form */}
         {activeTab === "params" && (
           <div className="space-y-4">
-            <NodeParameterEditor
-              type={node.type}
-              config={config}
-              onChange={handleFieldChange}
-            />
+            {nodeRegistry.getNode(node.type)?.manifest.configSchema ? (
+              <DynamicNodeConfigForm
+                schema={nodeRegistry.getNode(node.type)!.manifest.configSchema!}
+                config={config}
+                onChange={handleFieldChange}
+              />
+            ) : (
+              <NodeParameterEditor
+                type={node.type}
+                config={config}
+                onChange={handleFieldChange}
+              />
+            )}
           </div>
         )}
 

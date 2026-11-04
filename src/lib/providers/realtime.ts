@@ -33,3 +33,6 @@ export interface RealtimeProvider {
     callback: (event: ExecutionEventPayload) => void
   ): () => void;
 }
+
+export { supabaseRealtimeProvider } from "./supabase-realtime";
+

@@ -6,6 +6,7 @@ import {
 } from "../providers/execution";
 import { RealtimeProvider, ExecutionEventPayload } from "../providers/realtime";
 import { WorkflowDefinition, WorkflowNodeData } from "../types/workflow";
+import { nodeRegistry, createMockExecutionContext } from "@/lib/node-platform";
 
 // Global in-memory run store for local development and serverless previews
 const executionHistoryStore = new Map<string, ExecutionResult>();
@@ -166,17 +167,38 @@ export class BoundedExecutionSimulator implements ExecutionProvider {
       // Visual delay for realistic UX demonstration
       await delay(700);
 
-      // Perform simulated node computation
+      // Check if node is registered in NodePlatform
+      const registeredNode = nodeRegistry.getNode(node.type);
       let outputPayload: Record<string, unknown> = {};
 
-      if (node.type === "core.webhook") {
+      if (registeredNode) {
+        try {
+          const ctx = createMockExecutionContext({
+            executionId,
+            nodeExecutionId: node.id,
+          });
+          const res = await registeredNode.execute(currentPayload, node.config || {}, ctx);
+          if (res.status === "success" && res.output) {
+            outputPayload = res.output;
+            if (node.type === "logic.if") {
+              const condResult = Boolean(outputPayload.conditionMet ?? (outputPayload.chosenBranch === "yes"));
+              selectedBranch = condResult ? "yes" : "no";
+            }
+            currentPayload = { ...currentPayload, ...outputPayload };
+          } else {
+            outputPayload = res.output || { processed: true };
+          }
+        } catch (err: any) {
+          console.warn(`Execution error in node ${node.id} (${node.type}):`, err);
+          outputPayload = { error: err.message, processed: true };
+        }
+      } else if (node.type === "core.webhook") {
         outputPayload = {
           receivedAt: new Date().toISOString(),
           headers: { "x-source": "whatsapp-cloud", "content-type": "application/json" },
           body: { ...currentPayload },
         };
       } else if (node.type === "ai.agent") {
-        // AI qualification logic
         const score = 0.88;
         outputPayload = {
           qualificationScore: score,
@@ -186,7 +208,6 @@ export class BoundedExecutionSimulator implements ExecutionProvider {
         };
         currentPayload = { ...currentPayload, ...outputPayload };
       } else if (node.type === "logic.if") {
-        // Condition check
         const score = (currentPayload.qualificationScore as number) ?? 0.85;
         const conditionMet = score >= 0.7;
         selectedBranch = conditionMet ? "yes" : "no";
