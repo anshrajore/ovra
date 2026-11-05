@@ -172,202 +172,18 @@ const initialActivity: WorkspaceActivityItem[] = [
     id: "act_1",
     userName: "Ansh Rajore",
     userAvatar: "A",
-    action: "Published version 1 of",
-    targetType: "workflow",
-    targetTitle: "Lead Qualification Flow",
-    timestamp: "10 mins ago",
-  },
-  {
-    id: "act_2",
-    userName: "Priya Sharma",
-    userAvatar: "P",
-    action: "Tested execution of",
-    targetType: "workflow",
-    targetTitle: "Razorpay Invoice Webhook",
-    timestamp: "2 hours ago",
-  },
-  {
-    id: "act_3",
-    userName: "Ansh Rajore",
-    userAvatar: "A",
-    action: "Configured API credential for",
-    targetType: "credential",
-    targetTitle: "WhatsApp Business Cloud",
-    timestamp: "1 day ago",
-  },
-  {
-    id: "act_4",
-    userName: "Rahul Verma",
-    userAvatar: "R",
-    action: "Joined the workspace as",
-    targetType: "member",
-    targetTitle: "Editor",
-    timestamp: "3 days ago",
+    action: "Initialized workspace",
+    targetType: "workspace",
+    targetTitle: "Team Workspace",
+    timestamp: "Just now",
   },
 ];
 
-const initialCredentials: CredentialItem[] = [
-  {
-    id: "cred_slack",
-    name: "Slack Bot Token (Sales Alerts)",
-    integrationType: "slack",
-    maskedKey: "xoxb-9821••••••••••••",
-    status: "active",
-    createdAt: "2026-10-22T08:00:00Z",
-    lastTestedAt: "Today at 10:15 AM",
-  },
-  {
-    id: "cred_whatsapp",
-    name: "WhatsApp Business Cloud API",
-    integrationType: "whatsapp",
-    maskedKey: "EAAJ7••••••••••••wZDZD",
-    status: "active",
-    createdAt: "2026-10-25T14:30:00Z",
-    lastTestedAt: "Yesterday at 4:20 PM",
-  },
-  {
-    id: "cred_razorpay",
-    name: "Razorpay Live Webhook Secret",
-    integrationType: "razorpay",
-    maskedKey: "rzp_live_••••••••••••",
-    status: "active",
-    createdAt: "2026-10-30T11:00:00Z",
-    lastTestedAt: "Oct 30, 2026",
-  },
-  {
-    id: "cred_gemini",
-    name: "Google Gemini AI Production Key",
-    integrationType: "gemini",
-    maskedKey: "AIzaSy••••••••••••3M4k",
-    status: "active",
-    createdAt: "2026-11-01T09:15:00Z",
-    lastTestedAt: "Just now",
-  },
-];
+const initialCredentials: CredentialItem[] = [];
 
-const initialExecutions: ExecutionRecord[] = [
-  {
-    id: "exec_109281",
-    workflowId: "wf_lead_qualification",
-    workflowName: "Lead Qualification Flow",
-    status: "SUCCESS",
-    triggerType: "webhook",
-    startedAt: "2026-11-04T10:45:00Z",
-    durationMs: 1420,
-    nodeCount: 4,
-    steps: [
-      {
-        nodeId: "node_webhook",
-        nodeLabel: "Webhook",
-        nodeType: "core.webhook",
-        status: "success",
-        durationMs: 120,
-        outputs: { leadName: "Aarav Sharma", email: "aarav@techscale.in", score: 0.88 },
-      },
-      {
-        nodeId: "node_ai_agent",
-        nodeLabel: "AI Agent",
-        nodeType: "ai.agent",
-        status: "success",
-        durationMs: 780,
-        outputs: { qualificationScore: 0.88, intent: "Enterprise" },
-      },
-      {
-        nodeId: "node_if_logic",
-        nodeLabel: "IF",
-        nodeType: "logic.if",
-        status: "success",
-        durationMs: 25,
-        outputs: { conditionMet: true, chosenBranch: "yes" },
-      },
-      {
-        nodeId: "node_slack",
-        nodeLabel: "Slack",
-        nodeType: "comm.slack",
-        status: "success",
-        durationMs: 495,
-        outputs: { messageSent: true, channel: "#sales-leads" },
-      },
-      {
-        nodeId: "node_email",
-        nodeLabel: "Email",
-        nodeType: "comm.email",
-        status: "skipped",
-      },
-    ],
-  },
-  {
-    id: "exec_109280",
-    workflowId: "wf_lead_qualification",
-    workflowName: "Lead Qualification Flow",
-    status: "SUCCESS",
-    triggerType: "manual",
-    startedAt: "2026-11-04T09:12:00Z",
-    durationMs: 1380,
-    nodeCount: 4,
-    steps: [
-      { nodeId: "node_webhook", nodeLabel: "Webhook", nodeType: "core.webhook", status: "success", durationMs: 100 },
-      { nodeId: "node_ai_agent", nodeLabel: "AI Agent", nodeType: "ai.agent", status: "success", durationMs: 720 },
-      { nodeId: "node_if_logic", nodeLabel: "IF", nodeType: "logic.if", status: "success", durationMs: 30 },
-      { nodeId: "node_slack", nodeLabel: "Slack", nodeType: "comm.slack", status: "success", durationMs: 530 },
-    ],
-  },
-  {
-    id: "exec_109279",
-    workflowId: "wf_lead_qualification",
-    workflowName: "Lead Qualification Flow",
-    status: "FAILED",
-    triggerType: "webhook",
-    startedAt: "2026-11-03T18:30:00Z",
-    durationMs: 2100,
-    nodeCount: 2,
-    steps: [
-      { nodeId: "node_webhook", nodeLabel: "Webhook", nodeType: "core.webhook", status: "success", durationMs: 110 },
-      { nodeId: "node_ai_agent", nodeLabel: "AI Agent", nodeType: "ai.agent", status: "failed", durationMs: 1990, error: "AI Gateway rate limit exceeded. Retry scheduled." },
-    ],
-  },
-];
+const initialExecutions: ExecutionRecord[] = [];
 
-const initialWorkflowsList: WorkflowDefinition[] = [
-  initialWorkflow,
-  {
-    id: "wf_razorpay_order",
-    name: "Razorpay Payment & Invoice Delivery",
-    description: "Listens to payment.captured, generates GST invoice, and dispatches confirmation via WhatsApp.",
-    status: "active",
-    version: 2,
-    workspaceId: "ws_team_workspace",
-    projectId: "proj_sanjeevanix",
-    lastSavedAt: "1 hour ago",
-    nodes: [
-      { id: "node_rzp", type: "finance.razorpay", label: "Razorpay", subtitle: "Payment Captured", status: "idle" },
-      { id: "node_db", type: "db.postgres", label: "PostgreSQL", subtitle: "Record Transaction", status: "idle" },
-      { id: "node_wa", type: "comm.whatsapp", label: "WhatsApp", subtitle: "Send Invoice PDF", status: "idle" },
-    ],
-    edges: [
-      { id: "e1", source: "node_rzp", target: "node_db" },
-      { id: "e2", source: "node_db", target: "node_wa" },
-    ],
-  },
-  {
-    id: "wf_churn_sentinel",
-    name: "Customer Churn Sentinel",
-    description: "Monitors NPS scores, flags dissatisfied accounts, and automatically books retention call.",
-    status: "draft",
-    version: 1,
-    workspaceId: "ws_team_workspace",
-    lastSavedAt: "Yesterday",
-    nodes: [
-      { id: "node_nps", type: "core.webhook", label: "NPS Survey", subtitle: "Score Ingested", status: "idle" },
-      { id: "node_ai_churn", type: "ai.agent", label: "AI Agent", subtitle: "Sentiment Risk Analysis", status: "idle" },
-      { id: "node_slack_alert", type: "comm.slack", label: "Slack", subtitle: "Alert Success Manager", status: "idle" },
-    ],
-    edges: [
-      { id: "ec1", source: "node_nps", target: "node_ai_churn" },
-      { id: "ec2", source: "node_ai_churn", target: "node_slack_alert" },
-    ],
-  },
-];
+const initialWorkflowsList: WorkflowDefinition[] = [];
 
 // In-Memory & LocalStorage Synchronized Store Class
 class AppStore {
@@ -379,17 +195,7 @@ class AppStore {
   private credentials: CredentialItem[] = initialCredentials;
   private executions: ExecutionRecord[] = initialExecutions;
   private workflows: WorkflowDefinition[] = initialWorkflowsList;
-  private workflowVersions: Record<string, WorkflowVersionRecord[]> = {
-    wf_lead_qualification: [
-      {
-        versionNumber: 1,
-        publishedAt: "2026-11-03T14:00:00Z",
-        publishedBy: "Ansh Rajore",
-        notes: "Initial production release of Lead Qualification Flow",
-        definition: initialWorkflow,
-      },
-    ],
-  };
+  private workflowVersions: Record<string, WorkflowVersionRecord[]> = {};
   private listeners: Set<() => void> = new Set();
   private initialized: boolean = false;
 
@@ -440,13 +246,28 @@ class AppStore {
       if (a) this.activities = JSON.parse(a);
 
       const c = localStorage.getItem("ovra_credentials");
-      if (c) this.credentials = JSON.parse(c);
+      if (c) {
+        const parsed = JSON.parse(c);
+        this.credentials = Array.isArray(parsed)
+          ? parsed.filter((item: CredentialItem) => !["cred_slack", "cred_whatsapp", "cred_razorpay", "cred_gemini"].includes(item.id))
+          : [];
+      }
 
       const ex = localStorage.getItem("ovra_executions");
-      if (ex) this.executions = JSON.parse(ex);
+      if (ex) {
+        const parsed = JSON.parse(ex);
+        this.executions = Array.isArray(parsed)
+          ? parsed.filter((item: ExecutionRecord) => !["exec_109281", "exec_109280", "exec_109279"].includes(item.id))
+          : [];
+      }
 
       const wf = localStorage.getItem("ovra_workflows");
-      if (wf) this.workflows = JSON.parse(wf);
+      if (wf) {
+        const parsed = JSON.parse(wf);
+        this.workflows = Array.isArray(parsed)
+          ? parsed.filter((item: WorkflowDefinition) => !["wf_lead_qualification", "wf_razorpay_order", "wf_churn_sentinel"].includes(item.id))
+          : [];
+      }
 
       const v = localStorage.getItem("ovra_versions");
       if (v) this.workflowVersions = JSON.parse(v);

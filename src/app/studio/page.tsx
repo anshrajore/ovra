@@ -22,7 +22,18 @@ function StudioContent() {
       if (found) return found;
     }
     const workflows = store.getWorkflows();
-    return workflows[0] || initialWorkflow;
+    if (workflows.length > 0) return workflows[0];
+    return {
+      id: "wf_blank",
+      name: "Untitled Automation",
+      description: "Blank canvas workflow",
+      status: "draft" as const,
+      version: 1,
+      workspaceId: store.getActiveWorkspace().id,
+      nodes: [],
+      edges: [],
+      lastSavedAt: "Just now",
+    };
   }, [workflowId, store]);
 
   return (

@@ -33,12 +33,9 @@ export function StudioSidebar({
   onSelectProject,
 }: StudioSidebarProps) {
   const pathname = usePathname();
-  const [selectedProject, setSelectedProject] = useState("SanjeevaniX");
+  const [selectedProject, setSelectedProject] = useState("Default Project");
   const [projects, setProjects] = useState([
-    { id: "sanjeevanix", name: "SanjeevaniX" },
-    { id: "nayamarg", name: "NayaMarg" },
-    { id: "research", name: "Research" },
-    { id: "general", name: "General" },
+    { id: "default", name: "Default Project" },
   ]);
   const [isAddProjectOpen, setIsAddProjectOpen] = useState(false);
   const [newProjectName, setNewProjectName] = useState("");
