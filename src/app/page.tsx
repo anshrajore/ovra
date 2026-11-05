@@ -15,9 +15,18 @@ import {
   ArrowRight,
   CheckCircle2,
   XCircle,
-  HelpCircle,
+  Code2,
+  Send,
+  Sliders,
+  Clock,
   ExternalLink,
+  Shield,
+  HelpCircle,
+  FileCheck,
   Lock,
+  Workflow,
+  FlaskConical,
+  KeyRound,
 } from "lucide-react";
 
 export default function LandingPage() {
@@ -31,7 +40,7 @@ export default function LandingPage() {
           <LandingNavbar />
 
           {/* Hero Section */}
-          <div className="px-6 sm:px-10 md:px-14 lg:px-20 py-8 md:py-12 grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-center">
+          <div className="px-6 sm:px-10 md:px-14 lg:px-20 py-8 md:py-14 grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-center">
             {/* Left Content (7 cols) */}
             <div className="lg:col-span-7 flex flex-col justify-center">
               <span className="text-[11px] sm:text-xs font-bold tracking-[0.2em] uppercase text-gray-500 mb-3 sm:mb-4">
@@ -43,8 +52,8 @@ export default function LandingPage() {
               </h1>
 
               <p className="text-base sm:text-lg md:text-xl text-gray-700 max-w-2xl font-normal leading-relaxed mb-8">
-                The open workflow automation platform to connect your tools,
-                build intelligent workflows, and run AI-powered automations at scale.
+                The open workflow automation and AI orchestration platform to connect your tools,
+                build intelligent workflows, and run automations at enterprise scale.
               </p>
 
               {/* Action Buttons */}
@@ -61,7 +70,7 @@ export default function LandingPage() {
                   href="/studio"
                   className="px-7 py-3.5 bg-white hover:bg-gray-50 border border-gray-300 text-gray-900 font-semibold text-sm md:text-base rounded-full shadow-sm transition-all flex items-center gap-2"
                 >
-                  Launch Studio
+                  Launch Studio Canvas
                   <Play className="w-3.5 h-3.5 fill-gray-900 text-gray-900" />
                 </Link>
               </div>
@@ -109,7 +118,7 @@ export default function LandingPage() {
             <div className="flex flex-wrap items-center gap-6 sm:gap-10 md:gap-16">
               <div>
                 <div className="text-xl sm:text-2xl md:text-3xl font-bold tracking-tight text-white">
-                  34+
+                  36
                 </div>
                 <div className="text-[11px] sm:text-xs text-gray-400 font-medium">
                   Supabase Tables
@@ -145,7 +154,7 @@ export default function LandingPage() {
                   99.9%
                 </div>
                 <div className="text-[11px] sm:text-xs text-gray-400 font-medium">
-                  Uptime Target
+                  Target Availability
                 </div>
               </div>
             </div>
@@ -162,7 +171,7 @@ export default function LandingPage() {
           </div>
         </div>
 
-        {/* Section 2: Why Traditional Automation Breaks vs The OVRA Standard */}
+        {/* Section 1: Why Traditional Automation Breaks vs The OVRA Standard */}
         <div className="px-6 sm:px-12 py-16 max-w-6xl mx-auto w-full space-y-10">
           <div className="text-center space-y-3">
             <span className="text-xs font-bold text-amber-400 uppercase tracking-widest">
@@ -231,7 +240,7 @@ export default function LandingPage() {
           </div>
         </div>
 
-        {/* Section 3: Interactive How It Works */}
+        {/* Section 2: Interactive Execution Lifecycle (How It Works) */}
         <div className="px-6 sm:px-12 py-16 border-t border-white/5 max-w-6xl mx-auto w-full space-y-12">
           <div className="text-center space-y-3">
             <span className="text-xs font-bold text-amber-400 uppercase tracking-widest">
@@ -288,7 +297,143 @@ export default function LandingPage() {
           </div>
         </div>
 
-        {/* Section 4: Developer Hub CTA Banner */}
+        {/* Section 3: In-Canvas API Studio (The New Pillar) */}
+        <div className="px-6 sm:px-12 py-16 border-t border-white/5 max-w-6xl mx-auto w-full space-y-10">
+          <div className="text-center space-y-3">
+            <span className="text-xs font-bold text-amber-400 uppercase tracking-widest">
+              Developer Ergonomics
+            </span>
+            <h2 className="text-3xl sm:text-4xl font-black text-white tracking-tight">
+              In-Canvas API Studio: No Separate Playgrounds Needed
+            </h2>
+            <p className="text-sm text-gray-400 max-w-2xl mx-auto leading-relaxed">
+              API testing belongs directly inside the visual canvas. Configure requests, authenticate with leased credentials, execute live tests, and infer output schemas without switching tabs.
+            </p>
+          </div>
+
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+            <div className="p-6 rounded-2xl bg-white/5 border border-white/10 space-y-3">
+              <div className="w-10 h-10 rounded-xl bg-amber-400/10 text-amber-400 flex items-center justify-center">
+                <Sliders className="w-5 h-5" />
+              </div>
+              <h3 className="font-bold text-sm text-white">6-Stage Inspector Engine</h3>
+              <p className="text-xs text-gray-400 leading-relaxed">
+                Configure (Method, URL, Headers), Authentication (Bearer, API Key, Basic), Mapping (AST expression picker), Test, Response, and Advanced timeout/retry rules.
+              </p>
+            </div>
+
+            <div className="p-6 rounded-2xl bg-white/5 border border-white/10 space-y-3">
+              <div className="w-10 h-10 rounded-xl bg-amber-400/10 text-amber-400 flex items-center justify-center">
+                <Sparkles className="w-5 h-5" />
+              </div>
+              <h3 className="font-bold text-sm text-white">Automatic Schema Inference</h3>
+              <p className="text-xs text-gray-400 leading-relaxed">
+                One-click schema inference parses real API response keys into typed JSON Schema v7 contracts so downstream nodes can immediately map payload properties.
+              </p>
+            </div>
+
+            <div className="p-6 rounded-2xl bg-white/5 border border-white/10 space-y-3">
+              <div className="w-10 h-10 rounded-xl bg-amber-400/10 text-amber-400 flex items-center justify-center">
+                <ShieldCheck className="w-5 h-5" />
+              </div>
+              <h3 className="font-bold text-sm text-white">SSRF Defense & Safe Sandboxing</h3>
+              <p className="text-xs text-gray-400 leading-relaxed">
+                Automatic blocking of loopback addresses (`127.0.0.1`), AWS metadata (`169.254.169.254`), and private subnets (`10.0.0.0/8`, `192.168.0.0/16`) on every redirect.
+              </p>
+            </div>
+          </div>
+        </div>
+
+        {/* Section 4: Multi-Model AI Orchestrator */}
+        <div className="px-6 sm:px-12 py-16 border-t border-white/5 max-w-6xl mx-auto w-full space-y-10">
+          <div className="text-center space-y-3">
+            <span className="text-xs font-bold text-amber-400 uppercase tracking-widest">
+              AI Infrastructure
+            </span>
+            <h2 className="text-3xl sm:text-4xl font-black text-white tracking-tight">
+              AI as an Assistant, Not an Unbounded Black Box
+            </h2>
+            <p className="text-sm text-gray-400 max-w-2xl mx-auto leading-relaxed">
+              Orchestrate Google Gemini 2.5 Pro, Claude 3.5 Sonnet, and GPT-4o side-by-side with human approval gates, pgvector knowledge retrieval, and token budgeting.
+            </p>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+            <div className="p-6 rounded-2xl bg-[#121418] border border-white/10 space-y-3">
+              <span className="text-amber-400 font-bold text-xs uppercase font-mono">Google Gemini 2.5</span>
+              <h4 className="text-base font-bold text-white">Ultra-Low Latency & Reasoning</h4>
+              <p className="text-xs text-gray-400 leading-relaxed">
+                Sub-250ms latency for emergency triage, vital sign classification, and high-frequency webhook data categorization.
+              </p>
+            </div>
+
+            <div className="p-6 rounded-2xl bg-[#121418] border border-white/10 space-y-3">
+              <span className="text-purple-400 font-bold text-xs uppercase font-mono">Claude 3.5 Sonnet</span>
+              <h4 className="text-base font-bold text-white">Deep Context & Policy Synthesis</h4>
+              <p className="text-xs text-gray-400 leading-relaxed">
+                Complex clinical protocol compliance, regulatory contract synthesis, and complex multi-page document reasoning.
+              </p>
+            </div>
+
+            <div className="p-6 rounded-2xl bg-[#121418] border border-white/10 space-y-3">
+              <span className="text-emerald-400 font-bold text-xs uppercase font-mono">pgvector RAG</span>
+              <h4 className="text-base font-bold text-white">Sovereign Knowledge Indexing</h4>
+              <p className="text-xs text-gray-400 leading-relaxed">
+                Ingest internal PDF/Markdown SOPs, chunk them, and execute semantic similarity vector search directly inside Supabase PostgreSQL.
+              </p>
+            </div>
+          </div>
+
+          <div className="text-center pt-2">
+            <Link
+              href="/ai-studio"
+              className="inline-flex items-center gap-2 px-6 py-3 rounded-full bg-amber-400 hover:bg-amber-300 text-black font-bold text-xs shadow-md transition-all"
+            >
+              <span>Explore AI Studio Arena</span>
+              <ArrowRight className="w-4 h-4" />
+            </Link>
+          </div>
+        </div>
+
+        {/* Section 5: Resilience & TestLab */}
+        <div className="px-6 sm:px-12 py-16 border-t border-white/5 max-w-6xl mx-auto w-full space-y-10">
+          <div className="text-center space-y-3">
+            <span className="text-xs font-bold text-amber-400 uppercase tracking-widest">
+              Operational Reliability
+            </span>
+            <h2 className="text-3xl sm:text-4xl font-black text-white tracking-tight">
+              TestLab: Stress Testing & Failure Injection
+            </h2>
+            <p className="text-sm text-gray-400 max-w-2xl mx-auto leading-relaxed">
+              Verify workflow behavior under stress before production deployment. Inject 429 rate limits, 30s timeouts, and oversized payloads.
+            </p>
+          </div>
+
+          <div className="p-8 rounded-3xl bg-[#121418] border border-white/10 flex flex-col md:flex-row items-center justify-between gap-8">
+            <div className="space-y-3 max-w-xl">
+              <div className="flex items-center gap-2 text-xs font-bold text-amber-400 uppercase tracking-wider">
+                <FlaskConical className="w-4 h-4" />
+                <span>Chaos Simulation Suite</span>
+              </div>
+              <h3 className="text-2xl font-black text-white tracking-tight">
+                Simulate Real-World Failures in an Isolated Sandbox
+              </h3>
+              <p className="text-xs text-gray-400 leading-relaxed">
+                TestLab lets you inspect per-node execution durations, verify dead-letter queue behavior on timeouts, and confirm payload offloading for outputs exceeding 64 KiB.
+              </p>
+            </div>
+
+            <Link
+              href="/testlab"
+              className="px-6 py-3 rounded-full bg-white/10 hover:bg-white/15 text-white font-semibold text-xs border border-white/10 flex items-center gap-2 transition-all shrink-0"
+            >
+              <span>Launch TestLab Simulator</span>
+              <ArrowRight className="w-4 h-4" />
+            </Link>
+          </div>
+        </div>
+
+        {/* Section 6: Developer Hub & Documentation Banner */}
         <div className="px-6 sm:px-12 py-12 max-w-6xl mx-auto w-full">
           <div className="p-8 sm:p-12 rounded-3xl bg-gradient-to-r from-[#181A20] to-[#121418] border border-white/10 flex flex-col md:flex-row items-center justify-between gap-8">
             <div className="space-y-3 max-w-xl">
@@ -297,10 +442,10 @@ export default function LandingPage() {
                 <span>Engineered for Developers</span>
               </div>
               <h3 className="text-2xl sm:text-3xl font-black text-white tracking-tight">
-                Inspect the API Playground & Generate Scoped Keys
+                Developer Docs, Scoped API Keys & Webhook HMAC
               </h3>
               <p className="text-xs sm:text-sm text-gray-400 leading-relaxed">
-                Test live REST endpoints, simulate failure injection in TestLab, or design custom agent personas in AI Studio.
+                Trigger workflows via REST, import OpenAPI 3.0 specs, provision scoped tokens, and secure inbound events with HMAC-SHA256 signatures.
               </p>
             </div>
 
@@ -309,34 +454,41 @@ export default function LandingPage() {
                 href="/developers"
                 className="w-full sm:w-auto px-6 py-3 rounded-full bg-amber-400 hover:bg-amber-300 text-black font-bold text-xs shadow-md shadow-amber-500/20 flex items-center justify-center gap-2 transition-all"
               >
-                <span>Developer Portal</span>
+                <span>Developer Docs</span>
                 <ArrowRight className="w-4 h-4" />
               </Link>
               <Link
-                href="/ai-studio"
+                href="/developers/api-keys"
                 className="w-full sm:w-auto px-6 py-3 rounded-full bg-white/10 hover:bg-white/15 text-white font-semibold text-xs flex items-center justify-center gap-2 transition-all"
               >
-                <span>AI Studio</span>
-                <Sparkles className="w-4 h-4 text-amber-400" />
+                <span>Provision API Keys</span>
+                <KeyRound className="w-4 h-4" />
               </Link>
             </div>
           </div>
         </div>
 
-        {/* Section 5: FAQ Accordion */}
+        {/* Section 7: FAQ Accordion */}
         <div className="px-6 sm:px-12 py-16 border-t border-white/5 max-w-4xl mx-auto w-full space-y-8">
           <div className="text-center space-y-2">
             <h2 className="text-2xl sm:text-3xl font-black text-white tracking-tight">
               Frequently Asked Questions
             </h2>
-            <p className="text-xs text-gray-400">Everything you need to know about the OVRA platform and runtime architecture.</p>
+            <p className="text-xs text-gray-400">Honest technical answers about the OVRA platform and runtime architecture.</p>
           </div>
 
           <div className="space-y-4 text-xs">
             <div className="p-5 rounded-2xl bg-white/5 border border-white/10 space-y-2">
+              <h4 className="font-bold text-white text-sm">Where does API testing live in OVRA?</h4>
+              <p className="text-gray-400 leading-relaxed">
+                API testing lives directly inside the visual canvas inspector for HTTP/API nodes. You can configure methods, headers, and request bodies, authenticate with leased vault credentials, execute test requests, and automatically infer output schemas without leaving the workflow graph.
+              </p>
+            </div>
+
+            <div className="p-5 rounded-2xl bg-white/5 border border-white/10 space-y-2">
               <h4 className="font-bold text-white text-sm">How does tenant isolation work with Supabase PostgreSQL?</h4>
               <p className="text-gray-400 leading-relaxed">
-                All 34 core tables implement PostgreSQL Row-Level Security (RLS). Database queries set session context via `ovra.workspace_id` ensuring a query executed by Workspace A can never read, modify, or leak data belonging to Workspace B.
+                All 36 core tables implement PostgreSQL Row-Level Security (RLS). Database queries set session context via `ovra.workspace_id` ensuring a query executed by Workspace A can never read, modify, or leak data belonging to Workspace B.
               </p>
             </div>
 
@@ -348,9 +500,9 @@ export default function LandingPage() {
             </div>
 
             <div className="p-5 rounded-2xl bg-white/5 border border-white/10 space-y-2">
-              <h4 className="font-bold text-white text-sm">Can I import my existing OpenAPI / Swagger specifications?</h4>
+              <h4 className="font-bold text-white text-sm">What is the execution limit on the current Vercel-first stage?</h4>
               <p className="text-gray-400 leading-relaxed">
-                Yes. Using the OpenAPI Importer in Canvas Studio or API route `/api/v1/connectors/openapi/import`, you can parse any OpenAPI 3.0 JSON or YAML document to automatically generate type-safe node operations.
+                During the current Vercel-first stage, tasks are dispatched through Supabase Queues with bounded execution limits (15-second per-step timeout). A dedicated Temporal-backed worker fleet is the planned production gate for long-running jobs and high-concurrency event streams.
               </p>
             </div>
           </div>
@@ -388,16 +540,15 @@ export default function LandingPage() {
               </ul>
             </div>
 
-            {/* Advanced Engines */}
+            {/* Engineering */}
             <div className="space-y-2.5">
               <div className="font-bold text-white uppercase tracking-wider text-[11px]">Engineering</div>
               <ul className="space-y-1.5 text-gray-400">
                 <li><Link href="/ai-studio" className="hover:text-white transition-colors">AI Studio Workbench</Link></li>
                 <li><Link href="/testlab" className="hover:text-white transition-colors">TestLab Simulator</Link></li>
-                <li><Link href="/developers" className="hover:text-white transition-colors">Developer Portal</Link></li>
+                <li><Link href="/developers" className="hover:text-white transition-colors">Developer Docs</Link></li>
                 <li><Link href="/developers/api-keys" className="hover:text-white transition-colors">API Keys</Link></li>
-                <li><Link href="/developers/api-playground" className="hover:text-white transition-colors">API Playground</Link></li>
-                <li><Link href="/developers/webhooks" className="hover:text-white transition-colors">Webhooks & HMAC</Link></li>
+                <li><Link href="/developers/webhooks" className="hover:text-white transition-colors">Inbound Webhooks & HMAC</Link></li>
               </ul>
             </div>
 

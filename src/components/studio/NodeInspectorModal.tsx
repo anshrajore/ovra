@@ -22,6 +22,7 @@ import {
 import { WorkflowNodeData } from "@/lib/types/workflow";
 import { nodeRegistry, SchemaHelper } from "@/lib/node-platform";
 import { DynamicNodeConfigForm } from "./DynamicNodeConfigForm";
+import { InCanvasHttpInspector } from "./InCanvasHttpInspector";
 
 interface NodeInspectorModalProps {
   node: WorkflowNodeData | null;
@@ -201,7 +202,17 @@ export function NodeInspectorModal({
         {/* Tab 1: Parameters Form */}
         {activeTab === "params" && (
           <div className="space-y-4">
-            {nodeRegistry.getNode(node.type)?.manifest.configSchema ? (
+            {node.type === "core.http_request" ? (
+              <InCanvasHttpInspector
+                nodeId={node.id}
+                config={config}
+                onUpdateConfig={(updated) => {
+                  setConfig(updated);
+                  onUpdateConfig?.(node.id, updated);
+                }}
+                upstreamOutputs={node.inputs}
+              />
+            ) : nodeRegistry.getNode(node.type)?.manifest.configSchema ? (
               <DynamicNodeConfigForm
                 schema={nodeRegistry.getNode(node.type)!.manifest.configSchema!}
                 config={config}
