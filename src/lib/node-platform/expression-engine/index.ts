@@ -14,6 +14,7 @@ export class ExpressionEngine {
 
     for (const part of parts) {
       if (current === null || current === undefined) return undefined;
+      if (part === "__proto__" || part === "constructor" || part === "prototype") return undefined;
       current = current[part];
     }
     return current;

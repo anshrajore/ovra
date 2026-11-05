@@ -1,6 +1,39 @@
 import { NextResponse } from "next/server";
 import { nodeRegistry, defineConnector, defineNode } from "@/lib/node-platform";
 
+function isSafeUrl(rawUrl: string): boolean {
+  try {
+    const url = new URL(rawUrl);
+    if (url.protocol !== "https:" && url.protocol !== "http:") return false;
+    const hostname = url.hostname.toLowerCase();
+    if (
+      hostname === "localhost" ||
+      hostname === "127.0.0.1" ||
+      hostname === "0.0.0.0" ||
+      hostname === "::1" ||
+      hostname === "[::1]" ||
+      hostname === "169.254.169.254" ||
+      hostname.startsWith("127.") ||
+      hostname.startsWith("10.") ||
+      hostname.startsWith("192.168.") ||
+      hostname.startsWith("169.254.") ||
+      hostname.startsWith("fe80:")
+    ) {
+      return false;
+    }
+    if (hostname.startsWith("172.")) {
+      const parts = hostname.split(".");
+      if (parts.length >= 2) {
+        const secondOctet = parseInt(parts[1], 10);
+        if (secondOctet >= 16 && secondOctet <= 31) return false;
+      }
+    }
+    return true;
+  } catch {
+    return false;
+  }
+}
+
 export async function POST(request: Request) {
   try {
     const body = await request.json();
@@ -8,15 +41,7 @@ export async function POST(request: Request) {
 
     if (body.specUrl) {
       // Validate URL to prevent SSRF against internal resources
-      const parsedUrl = new URL(body.specUrl);
-      const hostname = parsedUrl.hostname.toLowerCase();
-      if (
-        hostname === "localhost" ||
-        hostname === "127.0.0.1" ||
-        hostname.startsWith("10.") ||
-        hostname.startsWith("192.168.") ||
-        hostname === "169.254.169.254"
-      ) {
+      if (!isSafeUrl(body.specUrl)) {
         return NextResponse.json(
           { success: false, error: "Access to private or local network hosts is restricted." },
           { status: 400 }
@@ -105,6 +130,9 @@ export async function POST(request: Request) {
           },
           execute: async (input: any, config: any) => {
             const targetUrl = `${baseUrl.replace(/\/$/, "")}${path}`;
+            if (!isSafeUrl(targetUrl)) {
+              throw new Error("SSRF Protection: Access to private or local network hosts is restricted.");
+            }
             const res = await fetch(targetUrl, {
               method: method.toUpperCase(),
               headers: {

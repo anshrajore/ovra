@@ -15,19 +15,41 @@ export const httpConnector = defineConnector({
 function isSafeUrl(rawUrl: string): boolean {
   try {
     const url = new URL(rawUrl);
+    // Only allow standard http and https protocols
+    if (url.protocol !== "https:" && url.protocol !== "http:") {
+      return false;
+    }
     const hostname = url.hostname.toLowerCase();
-    // Block loopback, local IPs, and AWS metadata addresses for SSRF prevention
+
+    // Block loopback, local IPs, and cloud metadata addresses for strict SSRF defense
     if (
       hostname === "localhost" ||
       hostname === "127.0.0.1" ||
-      hostname.startsWith("192.168.") ||
+      hostname === "0.0.0.0" ||
+      hostname === "::1" ||
+      hostname === "[::1]" ||
+      hostname === "169.254.169.254" || // AWS / GCP / Azure metadata endpoint
+      hostname.startsWith("127.") ||
       hostname.startsWith("10.") ||
-      hostname.startsWith("172.16.") ||
-      hostname === "169.254.169.254"
+      hostname.startsWith("192.168.") ||
+      hostname.startsWith("169.254.") ||
+      hostname.startsWith("fe80:")
     ) {
       return false;
     }
-    return url.protocol === "https:" || url.protocol === "http:";
+
+    // Check full RFC 1918 172.16.0.0/12 range (172.16.x.x through 172.31.x.x)
+    if (hostname.startsWith("172.")) {
+      const parts = hostname.split(".");
+      if (parts.length >= 2) {
+        const secondOctet = parseInt(parts[1], 10);
+        if (secondOctet >= 16 && secondOctet <= 31) {
+          return false;
+        }
+      }
+    }
+
+    return true;
   } catch {
     return false;
   }

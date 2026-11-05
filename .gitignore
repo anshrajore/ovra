@@ -25,3 +25,7 @@ pnpm-debug.log*
 # OS
 .DS_Store
 *.pem
+
+# Local Skills
+.agents/
+skills-lock.json
