@@ -78,7 +78,7 @@ export function StudioHeader({ onOpenAIStudio }: StudioHeaderProps) {
         {/* Left: Brand Logo & Navigation Pills */}
         <div className="flex items-center gap-8">
           <Link href="/" className="flex items-center gap-2 group">
-            <div className="w-7 h-7 rounded-lg bg-ovra-orange flex items-center justify-center shadow-sm group-hover:scale-105 transition-transform">
+            <div className="w-7 h-7 rounded-lg bg-[#2342FF] flex items-center justify-center shadow-sm group-hover:scale-105 transition-transform">
               <svg
                 className="w-4 h-4 text-white"
                 viewBox="0 0 24 24"
@@ -165,7 +165,7 @@ export function StudioHeader({ onOpenAIStudio }: StudioHeaderProps) {
               title="Recent Activity & Notifications"
             >
               <Bell className="w-4 h-4" />
-              <span className="absolute top-2 right-2 w-2 h-2 bg-ovra-orange rounded-full ring-2 ring-white" />
+              <span className="absolute top-2 right-2 w-2 h-2 bg-[#2342FF] rounded-full ring-2 ring-white" />
             </button>
 
             {isNotificationsOpen && (

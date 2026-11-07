@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import Link from "next/link";
 import {
   KeyRound,
   Plus,
@@ -19,6 +20,7 @@ import {
   CreditCard,
   Database,
   Phone,
+  ArrowLeft,
 } from "lucide-react";
 import { StudioHeader } from "@/components/studio/Header";
 import { StudioSidebar } from "@/components/studio/Sidebar";
@@ -72,6 +74,17 @@ export default function CredentialsPage() {
         {/* Content Area */}
         <main className="flex-1 overflow-y-auto bg-[#FAF7F2] p-8">
           <div className="max-w-5xl mx-auto space-y-6">
+            {/* Back Button Breadcrumb */}
+            <div className="flex items-center gap-2">
+              <Link
+                href="/studio"
+                className="inline-flex items-center gap-1.5 text-xs font-semibold text-gray-500 hover:text-[#2342FF] transition-colors"
+              >
+                <ArrowLeft className="w-3.5 h-3.5" />
+                <span>Back to Studio Canvas</span>
+              </Link>
+            </div>
+
             {/* Header */}
             <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
               <div>
@@ -95,7 +108,7 @@ export default function CredentialsPage() {
             </div>
 
             {/* Security Notice Banner */}
-            <div className="p-4 bg-orange-50/60 border border-orange-200/60 rounded-2xl flex items-start gap-3">
+            <div className="p-4 bg-blue-50/60 border border-blue-200/60 rounded-2xl flex items-start gap-3">
               <ShieldCheck className="w-5 h-5 text-ovra-orange shrink-0 mt-0.5" />
               <div className="text-xs">
                 <span className="font-bold text-gray-900 block">
@@ -216,7 +229,7 @@ export default function CredentialsPage() {
             </button>
 
             <div className="mb-5">
-              <div className="w-10 h-10 rounded-2xl bg-orange-50 border border-orange-200/60 flex items-center justify-center text-ovra-orange mb-3">
+              <div className="w-10 h-10 rounded-2xl bg-blue-50 border border-blue-200/60 flex items-center justify-center text-ovra-orange mb-3">
                 <KeyRound className="w-5 h-5" />
               </div>
               <h2 className="text-base font-bold text-gray-950">Add Integration Credential</h2>

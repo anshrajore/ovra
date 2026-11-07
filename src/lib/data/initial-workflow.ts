@@ -7,7 +7,7 @@ export const initialWorkflow: WorkflowDefinition = {
   status: "active",
   version: 1,
   workspaceId: "ws_team_workspace",
-  projectId: "proj_sanjeevanix",
+  projectId: "proj_enterprise_core",
   lastSavedAt: "2 min ago",
   nodes: [
     {

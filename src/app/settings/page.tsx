@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import Link from "next/link";
 import { useRouter } from "next/navigation";
 import {
   Settings,
@@ -14,6 +15,7 @@ import {
   Mail,
   CheckCircle2,
   AlertTriangle,
+  ArrowLeft,
 } from "lucide-react";
 import { StudioHeader } from "@/components/studio/Header";
 import { StudioSidebar } from "@/components/studio/Sidebar";
@@ -64,6 +66,17 @@ export default function SettingsPage() {
         {/* Content Area */}
         <main className="flex-1 overflow-y-auto bg-[#FAF7F2] p-8">
           <div className="max-w-4xl mx-auto space-y-8">
+            {/* Back Button Breadcrumb */}
+            <div className="flex items-center gap-2">
+              <Link
+                href="/studio"
+                className="inline-flex items-center gap-1.5 text-xs font-semibold text-gray-500 hover:text-[#2342FF] transition-colors"
+              >
+                <ArrowLeft className="w-3.5 h-3.5" />
+                <span>Back to Studio Canvas</span>
+              </Link>
+            </div>
+
             {/* Header */}
             <div>
               <h1 className="text-2xl font-bold tracking-tight text-gray-950 flex items-center gap-2.5">

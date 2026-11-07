@@ -14,6 +14,7 @@ import {
   CheckCircle2,
   XCircle,
   ArrowRight,
+  ArrowLeft,
   Pause,
   Layers,
 } from "lucide-react";
@@ -34,11 +35,11 @@ export default function TestLabPage() {
   const [currentStepIndex, setCurrentStepIndex] = useState(-1);
 
   const initialSteps: StepTelemetry[] = [
-    { nodeId: "node_1", name: "core.webhook (Patient Vitals Ingestion)", durationMs: 42, status: "idle" },
-    { nodeId: "node_2", name: "ai.model (Gemini 2.5 Risk Classifier)", durationMs: 280, status: "idle" },
-    { nodeId: "node_3", name: "logic.if (Severity > 0.8 Threshold)", durationMs: 12, status: "idle" },
-    { nodeId: "node_4", name: "db.postgres (Insert Critical Incident Record)", durationMs: 65, status: "idle" },
-    { nodeId: "node_5", name: "comm.slack (Dispatch P1 Hospital Alert)", durationMs: 145, status: "idle" },
+    { nodeId: "node_1", name: "core.webhook (Stripe Order & Telemetry Ingestion)", durationMs: 42, status: "idle" },
+    { nodeId: "node_2", name: "ai.model (Gemini 2.5 Churn & Risk Classifier)", durationMs: 280, status: "idle" },
+    { nodeId: "node_3", name: "logic.if (Risk Score > 0.8 Threshold)", durationMs: 12, status: "idle" },
+    { nodeId: "node_4", name: "db.postgres (Insert Incident Record)", durationMs: 65, status: "idle" },
+    { nodeId: "node_5", name: "comm.slack (Dispatch P1 Enterprise Alert)", durationMs: 145, status: "idle" },
   ];
 
   const [steps, setSteps] = useState<StepTelemetry[]>(initialSteps);
@@ -136,11 +137,24 @@ export default function TestLabPage() {
   return (
     <div className="min-h-screen bg-[#0C0D10] text-gray-100 p-6 sm:p-10">
       <div className="max-w-6xl mx-auto space-y-8">
+        {/* Navigation Breadcrumb / Back Button */}
+        <div className="flex items-center gap-2">
+          <Link
+            href="/studio"
+            className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-white/5 hover:bg-white/10 text-xs font-semibold text-white/80 hover:text-white transition-all border border-white/10"
+          >
+            <ArrowLeft className="w-3.5 h-3.5" />
+            <span>Back to Studio Canvas</span>
+          </Link>
+          <span className="text-white/30 text-xs">/</span>
+          <span className="text-xs font-mono text-white/50">TestLab</span>
+        </div>
+
         {/* Top Header */}
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-6 border-b border-white/10">
           <div>
-            <div className="flex items-center gap-2 text-xs text-amber-400 font-bold uppercase tracking-wider mb-2">
-              <FlaskConical className="w-4 h-4" />
+            <div className="flex items-center gap-2 text-xs text-[#2342FF] font-bold uppercase tracking-wider mb-2">
+              <FlaskConical className="w-4 h-4 text-[#2342FF]" />
               <span>Resilience & Stress Engineering</span>
             </div>
             <h1 className="text-3xl font-black text-white tracking-tight">
@@ -155,9 +169,9 @@ export default function TestLabPage() {
             <button
               onClick={handleStartSimulation}
               disabled={isRunning}
-              className="px-4 py-2 rounded-xl bg-amber-400 hover:bg-amber-300 text-black font-bold text-xs shadow-md shadow-amber-500/20 flex items-center gap-1.5 transition-all disabled:opacity-50"
+              className="px-5 py-2.5 rounded-xl bg-[#2342FF] hover:bg-[#1A35DB] text-white font-bold text-xs shadow-lg shadow-[#2342FF]/30 flex items-center gap-2 transition-all disabled:opacity-50"
             >
-              <Play className="w-3.5 h-3.5 fill-black" />
+              <Play className="w-3.5 h-3.5 fill-white" />
               <span>{isRunning ? "Simulating..." : "Run Test Simulation"}</span>
             </button>
             <button
@@ -167,20 +181,13 @@ export default function TestLabPage() {
               <RotateCcw className="w-3.5 h-3.5" />
               <span>Reset</span>
             </button>
-            <Link
-              href="/studio"
-              className="px-4 py-2 rounded-xl bg-white/5 hover:bg-white/10 text-gray-300 text-xs flex items-center gap-1 transition-all"
-            >
-              <span>Canvas</span>
-              <ArrowRight className="w-3.5 h-3.5" />
-            </Link>
           </div>
         </div>
 
         {/* Failure Injection Bar */}
         <div className="p-6 rounded-2xl bg-white/5 border border-white/10 space-y-4">
           <div className="flex items-center gap-2 text-xs font-bold text-white uppercase tracking-wider">
-            <Bug className="w-4 h-4 text-amber-400" />
+            <Bug className="w-4 h-4 text-[#2342FF]" />
             <span>Chaos & Failure Injection Scenario</span>
           </div>
 
@@ -199,7 +206,7 @@ export default function TestLabPage() {
                   onClick={() => setSelectedFailure(f.id)}
                   className={`p-3.5 rounded-xl border text-left transition-all ${
                     isSelected
-                      ? "bg-amber-400/10 border-amber-400 text-white shadow-sm"
+                      ? "bg-[#2342FF]/20 border-[#2342FF] text-white shadow-sm"
                       : "bg-black/30 border-white/5 text-gray-400 hover:border-white/10"
                   }`}
                 >

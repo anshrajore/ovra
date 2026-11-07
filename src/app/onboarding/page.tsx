@@ -44,7 +44,7 @@ export default function OnboardingPage() {
     workspaceName: "My Workspace",
     workspaceSlug: "my-workspace",
     region: "ap-south-1",
-    templateId: "sanjeevanix_alert",
+    templateId: "enterprise_churn_alert",
     credentialType: "none",
   });
 
@@ -104,9 +104,9 @@ export default function OnboardingPage() {
 
   const templates = [
     {
-      id: "sanjeevanix_alert",
-      name: "SanjeevaniX Emergency Hospital Alert",
-      desc: "Ingests patient vital telemetry, executes AI severity classification, and alerts on-call doctors via Slack and SMS.",
+      id: "enterprise_churn_alert",
+      name: "Enterprise Customer Churn AI Intervention",
+      desc: "Ingests product telemetry & usage decline, executes AI churn probability scoring, and routes high-priority customer alerts via Slack and CRM.",
       nodesCount: 5,
     },
     {

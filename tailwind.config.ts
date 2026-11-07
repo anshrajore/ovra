@@ -10,8 +10,10 @@ const config: Config = {
     extend: {
       colors: {
         ovra: {
-          orange: "#FF5C00",
-          "orange-dark": "#E04E00",
+          blue: "#2342FF",
+          "blue-dark": "#1A35DB",
+          orange: "#2342FF", // unified primary brand color
+          "orange-dark": "#1A35DB",
           cream: "#FAF5EE",
           "cream-light": "#FAF7F2",
           card: "#FFFFFF",

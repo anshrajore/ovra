@@ -109,13 +109,13 @@ func VerifyOvraWebhook(payload []byte, header string, secret string) bool {
           <div>
             <Link
               href="/developers"
-              className="inline-flex items-center gap-1.5 text-xs text-gray-400 hover:text-amber-400 mb-2 transition-colors"
+              className="inline-flex items-center gap-1.5 text-xs text-gray-400 hover:text-[#2342FF] mb-2 transition-colors"
             >
               <ArrowLeft className="w-3.5 h-3.5" />
               <span>Back to Developer Hub</span>
             </Link>
             <h1 className="text-2xl font-black text-white tracking-tight flex items-center gap-2">
-              <Webhook className="w-6 h-6 text-amber-400" />
+              <Webhook className="w-6 h-6 text-[#2342FF]" />
               <span>Inbound Webhook Verification & HMAC</span>
             </h1>
             <p className="text-xs text-gray-400 mt-1">
@@ -126,14 +126,14 @@ func VerifyOvraWebhook(payload []byte, header string, secret string) bool {
           <button
             onClick={handleSendPing}
             disabled={pingStatus === "sending"}
-            className="px-4 py-2 rounded-xl bg-amber-400 hover:bg-amber-300 text-black font-bold text-xs shadow-md shadow-amber-500/20 flex items-center gap-1.5 transition-all disabled:opacity-50"
+            className="px-4 py-2 rounded-xl bg-[#2342FF] hover:bg-[#1A35DB] text-white font-bold text-xs shadow-lg shadow-[#2342FF]/30 flex items-center gap-1.5 transition-all disabled:opacity-50"
           >
             {pingStatus === "sending" ? (
-              <Loader2 className="w-4 h-4 animate-spin" />
+              <Loader2 className="w-4 h-4 animate-spin text-white" />
             ) : pingStatus === "success" ? (
-              <CheckCircle2 className="w-4 h-4 text-black" />
+              <CheckCircle2 className="w-4 h-4 text-white" />
             ) : (
-              <Play className="w-3.5 h-3.5 fill-black" />
+              <Play className="w-3.5 h-3.5 fill-white" />
             )}
             <span>
               {pingStatus === "sending"

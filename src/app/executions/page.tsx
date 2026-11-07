@@ -10,6 +10,7 @@ import {
   Loader2,
   Clock,
   ArrowRight,
+  ArrowLeft,
   RotateCw,
   Copy,
   Check,
@@ -85,6 +86,13 @@ export default function ExecutionsPage() {
           <div className="max-w-6xl mx-auto space-y-6">
             {/* Page Header */}
             <div>
+              <Link
+                href="/studio"
+                className="inline-flex items-center gap-1.5 text-xs font-semibold text-gray-500 hover:text-[#2342FF] transition-colors mb-2.5"
+              >
+                <ArrowLeft className="w-3.5 h-3.5" />
+                Back to Studio Canvas
+              </Link>
               <h1 className="text-2xl font-bold tracking-tight text-gray-950 flex items-center gap-2.5">
                 <PlayCircle className="w-6 h-6 text-ovra-orange" />
                 Execution History

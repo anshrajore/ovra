@@ -108,13 +108,13 @@ export default function ApiKeysPage() {
           <div>
             <Link
               href="/developers"
-              className="inline-flex items-center gap-1.5 text-xs text-gray-400 hover:text-amber-400 mb-2 transition-colors"
+              className="inline-flex items-center gap-1.5 text-xs text-gray-400 hover:text-[#2342FF] mb-2 transition-colors"
             >
               <ArrowLeft className="w-3.5 h-3.5" />
               <span>Back to Developer Hub</span>
             </Link>
             <h1 className="text-2xl font-black text-white tracking-tight flex items-center gap-2">
-              <KeyRound className="w-6 h-6 text-amber-400" />
+              <KeyRound className="w-6 h-6 text-[#2342FF]" />
               <span>API Keys & Access Tokens</span>
             </h1>
             <p className="text-xs text-gray-400 mt-1">
@@ -127,7 +127,7 @@ export default function ApiKeysPage() {
               setCreatedSecret(null);
               setIsCreateOpen(true);
             }}
-            className="px-4 py-2 rounded-xl bg-amber-400 hover:bg-amber-300 text-black font-bold text-xs shadow-md shadow-amber-500/20 flex items-center gap-1.5 transition-all"
+            className="px-4 py-2 rounded-xl bg-[#2342FF] hover:bg-[#1A35DB] text-white font-bold text-xs shadow-lg shadow-[#2342FF]/30 flex items-center gap-1.5 transition-all"
           >
             <Plus className="w-4 h-4" />
             <span>Generate New Key</span>
@@ -136,10 +136,10 @@ export default function ApiKeysPage() {
 
         {/* Secret Banner if newly created */}
         {createdSecret && (
-          <div className="p-5 rounded-2xl bg-amber-400/10 border border-amber-400/30 text-amber-300 space-y-3">
+          <div className="p-5 rounded-2xl bg-[#2342FF]/10 border border-[#2342FF]/30 text-blue-200 space-y-3">
             <div className="flex items-start justify-between">
               <div className="flex items-center gap-2 font-bold text-sm text-white">
-                <CheckCircle2 className="w-5 h-5 text-amber-400" />
+                <CheckCircle2 className="w-5 h-5 text-[#2342FF]" />
                 <span>API Key Generated Successfully</span>
               </div>
               <button
@@ -149,14 +149,14 @@ export default function ApiKeysPage() {
                 <X className="w-4 h-4" />
               </button>
             </div>
-            <p className="text-xs text-amber-200/90 leading-relaxed">
+            <p className="text-xs text-blue-200/90 leading-relaxed">
               Please copy your secret key right now. For security reasons, you will not be able to view this key again.
             </p>
-            <div className="flex items-center gap-2 p-2.5 rounded-xl bg-black/60 border border-amber-400/30 font-mono text-xs text-white">
+            <div className="flex items-center gap-2 p-2.5 rounded-xl bg-black/60 border border-[#2342FF]/30 font-mono text-xs text-white">
               <span className="flex-1 truncate">{createdSecret}</span>
               <button
                 onClick={() => copyToClipboard(createdSecret)}
-                className="px-3 py-1 rounded-lg bg-amber-400 hover:bg-amber-300 text-black font-bold flex items-center gap-1 transition-all"
+                className="px-3 py-1 rounded-lg bg-[#2342FF] hover:bg-[#1A35DB] text-white font-bold flex items-center gap-1 transition-all"
               >
                 {copied ? <Check className="w-3.5 h-3.5" /> : <Copy className="w-3.5 h-3.5" />}
                 <span>{copied ? "Copied" : "Copy"}</span>

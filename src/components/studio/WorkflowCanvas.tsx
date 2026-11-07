@@ -762,7 +762,7 @@ export function WorkflowCanvas({ initialWorkflow }: WorkflowCanvasProps) {
         {nodes.length === 0 && (
           <div className="absolute inset-0 z-10 pointer-events-none flex items-center justify-center p-6">
             <div className="pointer-events-auto bg-white/95 backdrop-blur-md border border-ovra-border/80 shadow-lg rounded-3xl p-8 max-w-md text-center flex flex-col items-center gap-4 animate-in fade-in zoom-in-95 duration-200">
-              <div className="w-12 h-12 rounded-2xl bg-orange-50 border border-orange-200/70 flex items-center justify-center text-ovra-orange shadow-2xs">
+              <div className="w-12 h-12 rounded-2xl bg-blue-50 border border-blue-200/70 flex items-center justify-center text-[#2342FF] shadow-2xs">
                 <Workflow className="w-6 h-6" />
               </div>
               <div>

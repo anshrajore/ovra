@@ -471,8 +471,8 @@ export function InCanvasHttpInspector({
               {[
                 { label: "Trigger Output (Event ID)", expr: "{{nodes.trigger.id}}" },
                 { label: "Trigger Timestamp", expr: "{{nodes.trigger.timestamp}}" },
-                { label: "Patient ID / User ID", expr: "{{outputs.patientId}}" },
-                { label: "Severity Classification", expr: "{{outputs.riskScore}}" },
+                { label: "Customer ID / Account ID", expr: "{{outputs.customerId}}" },
+                { label: "Risk Score Classification", expr: "{{outputs.riskScore}}" },
                 { label: "Decrypted Token Ref", expr: "{{credentials.default.token}}" },
               ].map((v, idx) => (
                 <button

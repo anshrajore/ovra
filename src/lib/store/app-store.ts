@@ -109,9 +109,9 @@ const initialWorkspaces: Workspace[] = [
     createdAt: "2026-10-20T11:30:00Z",
   },
   {
-    id: "ws_sanjeevanix",
-    name: "SanjeevaniX Labs",
-    description: "Health-tech & AI pipeline operations",
+    id: "ws_enterprise_cloud",
+    name: "Enterprise Cloud Ops",
+    description: "Fintech, security & AI pipeline operations",
     type: "startup",
     environment: "staging",
     role: "editor",

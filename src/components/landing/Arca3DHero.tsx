@@ -120,34 +120,14 @@ export function Arca3DHero() {
 
       {/* Main Kinetic & 3D Stage */}
       <div className="relative w-full max-w-7xl mx-auto px-6 py-8 sm:py-12 flex-1 flex flex-col justify-center">
-        {/* Massive Typographic Backdrop Layer: "OVRA" (Image 3 ARCA reference) */}
-        <div
-          className="absolute inset-0 flex items-center justify-center pointer-events-none z-0 overflow-hidden"
-          style={{
-            transform: `perspective(1000px) rotateX(${rotX * 0.3}deg) rotateY(${rotY * 0.3}deg)`,
-            transition: "transform 0.2s cubic-bezier(0.1, 0.8, 0.3, 1)",
-          }}
-        >
-          <span
-            className="text-[18vw] font-black tracking-tighter text-white/95 leading-none select-none text-center drop-shadow-2xl"
-            style={{
-              fontFamily: "system-ui, -apple-system, sans-serif",
-              letterSpacing: "-0.07em",
-              textShadow: "0 25px 60px rgba(0, 0, 0, 0.35)",
-            }}
-          >
-            OVRA
-          </span>
-        </div>
-
-        {/* 3D Floating Interactive Composition in Front */}
+        {/* 3D Floating Interactive Composition */}
         <div
           className="relative z-10 grid grid-cols-1 lg:grid-cols-12 gap-8 items-center"
           style={{
             perspective: "1200px",
           }}
         >
-          {/* Left Column: Headline & Value Proposition */}
+          {/* Left Column: Headline & Value Proposition (100% Uncluttered Clean Contrast) */}
           <div className="lg:col-span-6 flex flex-col items-start text-left z-20">
             <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-black/40 backdrop-blur-md border border-white/20 text-xs font-medium text-white mb-6">
               <Sparkles className="w-3.5 h-3.5 text-[#FFD028]" />
@@ -193,7 +173,7 @@ export function Arca3DHero() {
             </div>
           </div>
 
-          {/* Right Column: Interactive 3D Floating Cards Canvas (ARCA + Robin reference) */}
+          {/* Right Column: Interactive 3D Floating Cards Canvas with Background Typographic OVRA */}
           <div
             className="lg:col-span-6 relative w-full h-[380px] sm:h-[440px] md:h-[480px] flex items-center justify-center"
             style={{
@@ -202,6 +182,17 @@ export function Arca3DHero() {
               transition: "transform 0.15s cubic-bezier(0.1, 0.7, 0.3, 1)",
             }}
           >
+            {/* Signature ARCA-style Graphic Typographic Layer (Positioned behind 3D cards only) */}
+            <div
+              className="absolute -top-14 -right-4 pointer-events-none z-0 select-none opacity-20 font-black text-white text-[12rem] lg:text-[14rem] tracking-tighter leading-none"
+              style={{
+                fontFamily: "system-ui, -apple-system, sans-serif",
+                textShadow: "0 25px 50px rgba(0, 0, 0, 0.4)",
+              }}
+            >
+              OVRA
+            </div>
+
             {/* Card 1: Left Tilted Dark Pass Card (Luca Ferrante style from Image 3) */}
             <div
               className="absolute left-0 sm:left-4 top-6 sm:top-10 w-[240px] sm:w-[270px] rounded-3xl bg-[#0E1015] border border-white/20 p-5 text-white shadow-2xl transition-all duration-300 hover:scale-105 z-20"
@@ -222,10 +213,10 @@ export function Arca3DHero() {
               </div>
 
               <div className="text-lg font-black tracking-tight mb-1 text-white">
-                SanjeevaniX AI
+                Enterprise Churn Guard
               </div>
               <p className="text-xs text-white/70 mb-4">
-                Emergency triage & multi-agent FHIR bed allocation pipeline.
+                Autonomous B2B telemetry & real-time Stripe revenue retention DAG.
               </p>
 
               {/* Status pill & stats */}

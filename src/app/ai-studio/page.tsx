@@ -26,10 +26,10 @@ export default function AIStudioPage() {
   // Workbench state
   const [model, setModel] = useState("gemini-2.5-flash");
   const [systemPrompt, setSystemPrompt] = useState(
-    "You are an expert hospital triage and patient severity analyzer. Categorize vital telemetry and recommend immediate operational interventions."
+    "You are an expert enterprise automation and incident triaging intelligence agent. Analyze system telemetry, calculate risk scores, and orchestrate automated remediations."
   );
   const [userPrompt, setUserPrompt] = useState(
-    "Patient P-9021 vitals: Heart Rate: 142 bpm, Blood Pressure: 178/110 mmHg, SpO2: 89%. Classify priority and formulate emergency escalation."
+    "Production cluster incident #INC-9482: Latency spike to 1,420ms on Stripe Webhook Consumer, error rate 4.8%, database pool at 96% saturation. Classify severity and recommend remediation."
   );
   const [temperature, setTemperature] = useState(0.2);
   const [workbenchLoading, setWorkbenchLoading] = useState(false);
@@ -45,9 +45,9 @@ export default function AIStudioPage() {
 
   // RAG state
   const [knowledgeSources, setKnowledgeSources] = useState([
-    { id: "src_1", name: "SanjeevaniX_Clinical_Protocols_2026.pdf", chunks: 142, status: "Indexed (pgvector)", size: "2.4 MB" },
-    { id: "src_2", name: "ICU_Emergency_Escalation_SLA.md", chunks: 38, status: "Indexed (pgvector)", size: "480 KB" },
-    { id: "src_3", name: "Ayushman_Bharat_Coverage_Rules.json", chunks: 215, status: "Indexed (pgvector)", size: "4.1 MB" },
+    { id: "src_1", name: "Enterprise_SLA_and_Security_Protocols_2026.pdf", chunks: 142, status: "Indexed (pgvector)", size: "2.4 MB" },
+    { id: "src_2", name: "SOC2_Compliance_and_Incident_Playbook.md", chunks: 38, status: "Indexed (pgvector)", size: "480 KB" },
+    { id: "src_3", name: "Stripe_and_Billing_Architecture_Guide.json", chunks: 215, status: "Indexed (pgvector)", size: "4.1 MB" },
   ]);
   const [searchQuery, setSearchQuery] = useState("");
   const [searchResults, setSearchResults] = useState<string[] | null>(null);
@@ -60,21 +60,21 @@ export default function AIStudioPage() {
       setWorkbenchOutput(
         JSON.stringify(
           {
-            priority: "CRITICAL_TIER_1",
-            riskScore: 0.94,
-            clinicalAssessment: "Severe tachyarrhythmia with hypoxemia and hypertensive urgency. High acute decompensation probability.",
+            priority: "P1_CRITICAL_INCIDENT",
+            riskScore: 0.92,
+            incidentAssessment: "Connection pool exhaustion causing webhook backpressure and latency degradation across payment queues.",
             immediateActions: [
-              "Dispatch on-call cardiologist immediately (Slack #critical-ops).",
-              "Administer supplemental oxygen to target SpO2 > 94%.",
-              "Establish continuous 12-lead ECG monitoring.",
-              "Prepare IV labetalol / nicardipine per Protocol Section 4.2."
+              "Trigger auto-scaler node to add 4 replica pods.",
+              "Temporarily divert non-critical batch jobs to Dead Letter Queue.",
+              "Notify on-call platform engineers via Slack (#incidents-war-room).",
+              "Lease ephemeral read-replica connection pool."
             ],
             traceMetadata: {
               model: model,
-              latencyMs: 240,
-              inputTokens: 86,
-              outputTokens: 112,
-              estimatedCostINR: "₹0.0042",
+              latencyMs: 180,
+              inputTokens: 78,
+              outputTokens: 92,
+              estimatedCostUSD: "$0.0002",
             },
           },
           null,
@@ -82,7 +82,7 @@ export default function AIStudioPage() {
         )
       );
       setWorkbenchLoading(false);
-    }, 700);
+    }, 600);
   };
 
   const handleRunArena = () => {
@@ -92,41 +92,54 @@ export default function AIStudioPage() {
     setTimeout(() => {
       setArenaOutputs({
         gemini: {
-          text: "Priority: CRITICAL. Heart rate >140 with SpO2 <90% indicates impending respiratory/cardiac failure. Trigger immediate ICU stat team.",
-          latency: 220,
-          tokens: 48,
+          text: "P1 Incident. Database saturation >95% threatens webhook drop. Scale replicas and divert async jobs immediately.",
+          latency: 180,
+          tokens: 44,
         },
         claude: {
-          text: "Priority 1 Emergency. Concurrent hypoxia (89%) and hypertensive crisis require simultaneous airway stabilization and controlled BP reduction.",
-          latency: 380,
-          tokens: 54,
+          text: "Critical Priority: Connection starvation on payment ingestion pipeline. Execute auto-scaling and throttle non-essential cron queries.",
+          latency: 290,
+          tokens: 52,
         },
         gpt: {
-          text: "Red Alert. Severe hypertension combined with hypoxemia and tachycardia meets Code Blue warning criteria. Dispatch rapid response.",
-          latency: 310,
-          tokens: 49,
+          text: "Severity 1: Connection pool bottleneck. Activate read replicas, isolate batch consumers, and alert primary SRE responder.",
+          latency: 260,
+          tokens: 46,
         },
       });
       setArenaLoading(false);
-    }, 900);
+    }, 750);
   };
 
   const handleSearchRag = () => {
     if (!searchQuery.trim()) return;
     setSearchResults([
-      "[Chunk #42 - Cosine: 0.892] Protocol 4.2: In acute decompensated states where SpO2 drops below 90% and systolic BP > 170 mmHg, alert attending ICU intensivist within 90 seconds.",
-      "[Chunk #18 - Cosine: 0.841] Protocol 2.1: Cardiac Telemetry Alarm Escalation: Automatically route push notification to on-call duty nurse and log event in audit_logs.",
+      "[Chunk #42 - Cosine: 0.892] Protocol 4.2: In high-concurrency payment outages where webhook lag exceeds 500ms, enable idempotent replay buffer.",
+      "[Chunk #18 - Cosine: 0.841] Protocol 2.1: Database Connection Saturation: Auto-divert background batch tasks to dead-letter queue when active pool exceeds 90%.",
     ]);
   };
 
   return (
     <div className="min-h-screen bg-[#0C0D10] text-gray-100 p-6 sm:p-10">
       <div className="max-w-6xl mx-auto space-y-8">
+        {/* Navigation Breadcrumb / Back Button */}
+        <div className="flex items-center gap-2">
+          <Link
+            href="/studio"
+            className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-white/5 hover:bg-white/10 text-xs font-semibold text-white/80 hover:text-white transition-all border border-white/10"
+          >
+            <ArrowRight className="w-3.5 h-3.5 rotate-180" />
+            <span>Back to Studio Canvas</span>
+          </Link>
+          <span className="text-white/30 text-xs">/</span>
+          <span className="text-xs font-mono text-white/50">AI Studio</span>
+        </div>
+
         {/* Top Header */}
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-6 border-b border-white/10">
           <div>
-            <div className="flex items-center gap-2 text-xs text-amber-400 font-bold uppercase tracking-wider mb-2">
-              <Brain className="w-4 h-4" />
+            <div className="flex items-center gap-2 text-xs text-[#2342FF] font-bold uppercase tracking-wider mb-2">
+              <Brain className="w-4 h-4 text-[#2342FF]" />
               <span>Multi-Model AI Infrastructure</span>
             </div>
             <h1 className="text-3xl font-black text-white tracking-tight">
@@ -140,7 +153,7 @@ export default function AIStudioPage() {
           <div className="flex items-center gap-3">
             <Link
               href="/studio"
-              className="px-4 py-2 rounded-xl bg-amber-400 hover:bg-amber-300 text-black font-bold text-xs shadow-md shadow-amber-500/20 flex items-center gap-1.5 transition-all"
+              className="px-4 py-2 rounded-xl bg-[#2342FF] hover:bg-[#1A35DB] text-white font-bold text-xs shadow-lg shadow-[#2342FF]/30 flex items-center gap-1.5 transition-all"
             >
               <span>Attach to Canvas</span>
               <ArrowRight className="w-3.5 h-3.5" />
@@ -154,7 +167,7 @@ export default function AIStudioPage() {
             onClick={() => setActiveTab("workbench")}
             className={`flex-1 py-2 px-3 rounded-xl text-xs font-bold transition-all flex items-center justify-center gap-2 ${
               activeTab === "workbench"
-                ? "bg-amber-400 text-black shadow-md shadow-amber-500/20"
+                ? "bg-[#2342FF] text-white shadow-md shadow-[#2342FF]/30"
                 : "text-gray-400 hover:text-white"
             }`}
           >

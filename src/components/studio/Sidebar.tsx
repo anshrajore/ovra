@@ -164,11 +164,11 @@ export function StudioSidebar({
         </div>
 
         {/* Upgrade to Pro Card */}
-        <div className="relative overflow-hidden rounded-2xl p-4 bg-gradient-to-br from-[#FFF4EA] to-[#FEE4D6] border border-ovra-orange/20 shadow-xs">
-          <div className="absolute -right-6 -bottom-6 w-20 h-20 bg-ovra-orange/20 rounded-full blur-xl pointer-events-none" />
+        <div className="relative overflow-hidden rounded-2xl p-4 bg-gradient-to-br from-[#EEF2FF] to-[#E0E7FF] border border-[#2342FF]/20 shadow-xs">
+          <div className="absolute -right-6 -bottom-6 w-20 h-20 bg-[#2342FF]/20 rounded-full blur-xl pointer-events-none" />
 
-          <div className="flex items-center gap-1.5 text-ovra-orange mb-1.5">
-            <Sparkles className="w-4 h-4 fill-ovra-orange text-ovra-orange" />
+          <div className="flex items-center gap-1.5 text-[#2342FF] mb-1.5">
+            <Sparkles className="w-4 h-4 fill-[#2342FF] text-[#2342FF]" />
           </div>
 
           <h4 className="text-xs font-bold text-gray-950 mb-1">

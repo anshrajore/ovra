@@ -6,6 +6,7 @@ import {
   Webhook,
   Play,
   ArrowRight,
+  ArrowLeft,
   ShieldCheck,
   Zap,
   BookOpen,
@@ -19,11 +20,24 @@ export default function DevelopersPage() {
   return (
     <div className="min-h-screen bg-[#0C0D10] text-gray-100 p-6 sm:p-10">
       <div className="max-w-6xl mx-auto space-y-10">
-        {/* Navigation Breadcrumb / Header */}
+        {/* Navigation Breadcrumb / Back Button */}
+        <div className="flex items-center gap-2">
+          <Link
+            href="/studio"
+            className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-white/5 hover:bg-white/10 text-xs font-semibold text-white/80 hover:text-white transition-all border border-white/10"
+          >
+            <ArrowLeft className="w-3.5 h-3.5" />
+            <span>Back to Studio Canvas</span>
+          </Link>
+          <span className="text-white/30 text-xs">/</span>
+          <span className="text-xs font-mono text-white/50">Developers</span>
+        </div>
+
+        {/* Top Header */}
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-6 border-b border-white/10">
           <div>
-            <div className="flex items-center gap-2 text-xs text-amber-400 font-bold uppercase tracking-wider mb-2">
-              <Terminal className="w-4 h-4" />
+            <div className="flex items-center gap-2 text-xs text-[#2342FF] font-bold uppercase tracking-wider mb-2">
+              <Terminal className="w-4 h-4 text-[#2342FF]" />
               <span>OVRA Developer Platform & Public API Reference</span>
             </div>
             <h1 className="text-3xl font-black text-white tracking-tight">
@@ -37,10 +51,10 @@ export default function DevelopersPage() {
           <div className="flex items-center gap-3">
             <Link
               href="/studio"
-              className="px-4 py-2 rounded-xl bg-amber-400 hover:bg-amber-300 text-black font-bold text-xs shadow-md shadow-amber-500/20 flex items-center gap-1.5 transition-all"
+              className="px-4 py-2 rounded-xl bg-[#2342FF] hover:bg-[#1A35DB] text-white font-bold text-xs shadow-lg shadow-[#2342FF]/30 flex items-center gap-1.5 transition-all"
             >
-              <Play className="w-3.5 h-3.5 fill-black" />
-              <span>Test APIs in Canvas Studio</span>
+              <Play className="w-3.5 h-3.5 fill-white" />
+              <span>Launch Studio Canvas</span>
             </Link>
             <Link
               href="/developers/api-keys"
@@ -133,11 +147,11 @@ export default function DevelopersPage() {
   -H "Authorization: Bearer ovra_live_948f21ba99d28e71" \\
   -H "Content-Type: application/json" \\
   -d '{
-    "workflowId": "wf_sanjeevanix_alert_01",
+    "workflowId": "wf_enterprise_order_triage",
     "inputs": {
-      "patientId": "P-9021",
-      "heartRate": 142,
-      "oxygenSaturation": 89
+      "customerId": "CUST_9021",
+      "orderValue": 4500,
+      "riskScore": 0.12
     }
   }'`}
             </pre>

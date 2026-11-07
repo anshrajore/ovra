@@ -36,8 +36,8 @@ export const WebhookNode = memo(({ data }: { data: BaseNodeData }) => {
     >
       <div className="flex items-center gap-3">
         {/* Left Circular Icon Badge */}
-        <div className="w-10 h-10 rounded-full bg-[#FFF5ED] border border-orange-200/80 flex items-center justify-center shrink-0">
-          <Zap className="w-4 h-4 text-ovra-orange fill-ovra-orange" />
+        <div className="w-10 h-10 rounded-full bg-[#EEF2FF] border border-blue-200/80 flex items-center justify-center shrink-0">
+          <Zap className="w-4 h-4 text-[#2342FF] fill-[#2342FF]" />
         </div>
 
         {/* Content */}
@@ -290,7 +290,7 @@ export const EmailNode = memo(({ data }: { data: BaseNodeData }) => {
         isSkipped
           ? "opacity-40 grayscale border-dashed border-gray-300"
           : isRunning
-          ? "border-orange-500 ring-4 ring-orange-500/15 shadow-md"
+          ? "border-[#2342FF] ring-4 ring-[#2342FF]/15 shadow-md"
           : isSuccess
           ? "border-emerald-400 ring-2 ring-emerald-100"
           : "border-gray-200/90 hover:border-gray-300"
@@ -300,13 +300,13 @@ export const EmailNode = memo(({ data }: { data: BaseNodeData }) => {
       <Handle
         type="target"
         position={Position.Left}
-        className="!w-2.5 !h-2.5 !bg-gray-400 !border-2 !border-white hover:!bg-orange-600"
+        className="!w-2.5 !h-2.5 !bg-gray-400 !border-2 !border-white hover:!bg-[#2342FF]"
       />
 
       <div className="flex items-center gap-3">
         {/* Email Icon */}
-        <div className="w-10 h-10 rounded-full bg-[#FFF5ED] border border-orange-200/80 flex items-center justify-center shrink-0">
-          <Mail className="w-4 h-4 text-ovra-orange" />
+        <div className="w-10 h-10 rounded-full bg-[#EEF2FF] border border-blue-200/80 flex items-center justify-center shrink-0">
+          <Mail className="w-4 h-4 text-[#2342FF]" />
         </div>
 
         {/* Content */}
@@ -319,7 +319,7 @@ export const EmailNode = memo(({ data }: { data: BaseNodeData }) => {
               <CheckCircle2 className="w-3.5 h-3.5 text-emerald-600" />
             )}
             {isRunning && (
-              <Loader2 className="w-3.5 h-3.5 text-ovra-orange animate-spin" />
+              <Loader2 className="w-3.5 h-3.5 text-[#2342FF] animate-spin" />
             )}
           </div>
           <span className="text-[11px] text-gray-500 font-medium">
@@ -348,7 +348,7 @@ export const UniversalCanvasNode = memo(({ id, type, data }: { id: string; type:
 
   // Determine accent color and border
   const getTheme = () => {
-    if (isTrigger) return { bg: "bg-[#FFF5ED]", border: "border-orange-200/80", text: "text-ovra-orange", ring: "ring-ovra-orange/15" };
+    if (isTrigger) return { bg: "bg-[#EEF2FF]", border: "border-blue-200/80", text: "text-[#2342FF]", ring: "ring-[#2342FF]/15" };
     if (isAi) return { bg: "bg-[#F6F2FF]", border: "border-purple-200/80", text: "text-purple-600", ring: "ring-purple-500/15" };
     if (isLogic) return { bg: "bg-[#FFFBEB]", border: "border-amber-200/80", text: "text-amber-600", ring: "ring-amber-500/15" };
     if (isDb) return { bg: "bg-[#EFF6FF]", border: "border-blue-200/80", text: "text-blue-600", ring: "ring-blue-500/15" };

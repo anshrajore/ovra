@@ -102,9 +102,9 @@ export function PlumbManifesto() {
         <div className="mt-16 flex items-center justify-between p-3.5 sm:p-4 rounded-full bg-white/5 backdrop-blur-xl border border-white/10 text-xs text-white/80">
           <div className="flex items-center gap-3">
             <div className="w-2.5 h-2.5 rounded-full bg-[#00E599] animate-pulse" />
-            <span className="font-semibold text-white">SanjeevaniX Emergency Call Triage</span>
+            <span className="font-semibold text-white">Real-Time Stripe Invoicing & Fraud Interceptor</span>
             <span className="text-white/40 hidden sm:inline">•</span>
-            <span className="text-white/60 hidden sm:inline font-mono">DAG-7491-DELHI</span>
+            <span className="text-white/60 hidden sm:inline font-mono">DAG-8491-PROD</span>
           </div>
 
           <div className="flex items-center gap-4">

@@ -22,6 +22,7 @@ import {
   CheckCircle2,
   X,
   FileCode,
+  ArrowLeft,
 } from "lucide-react";
 import { StudioHeader } from "@/components/studio/Header";
 import { StudioSidebar } from "@/components/studio/Sidebar";
@@ -183,17 +184,25 @@ export default function WorkflowsDashboardPage() {
         <main className="flex-1 overflow-y-auto bg-[#FAF7F2] p-8">
           <div className="max-w-6xl mx-auto space-y-6">
             {/* Page Header */}
-            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-              <div>
-                <h1 className="text-2xl font-bold tracking-tight text-gray-950 flex items-center gap-2.5">
-                  <Workflow className="w-6 h-6 text-ovra-orange" />
-                  Workflows
-                </h1>
-                <p className="text-xs text-gray-500 mt-1">
-                  Design, orchestrate and monitor multi-step automations in{" "}
-                  <span className="font-semibold text-gray-800">{activeWorkspace.name}</span>.
-                </p>
-              </div>
+            <div>
+              <Link
+                href="/studio"
+                className="inline-flex items-center gap-1.5 text-xs font-semibold text-gray-500 hover:text-[#2342FF] transition-colors mb-2.5"
+              >
+                <ArrowLeft className="w-3.5 h-3.5" />
+                Back to Studio Canvas
+              </Link>
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                <div>
+                  <h1 className="text-2xl font-bold tracking-tight text-gray-950 flex items-center gap-2.5">
+                    <Workflow className="w-6 h-6 text-ovra-orange" />
+                    Workflows
+                  </h1>
+                  <p className="text-xs text-gray-500 mt-1">
+                    Design, orchestrate and monitor multi-step automations in{" "}
+                    <span className="font-semibold text-gray-800">{activeWorkspace.name}</span>.
+                  </p>
+                </div>
 
               {/* Action Buttons */}
               <div className="flex items-center gap-2.5">
@@ -212,6 +221,7 @@ export default function WorkflowsDashboardPage() {
                   New Workflow
                 </button>
               </div>
+            </div>
             </div>
 
             {/* Filter & Control Bar */}
@@ -492,7 +502,7 @@ export default function WorkflowsDashboardPage() {
             </button>
 
             <div className="mb-5">
-              <div className="w-10 h-10 rounded-2xl bg-orange-50 border border-orange-200/60 flex items-center justify-center text-ovra-orange mb-3">
+              <div className="w-10 h-10 rounded-2xl bg-blue-50 border border-blue-200/60 flex items-center justify-center text-ovra-orange mb-3">
                 <Workflow className="w-5 h-5" />
               </div>
               <h2 className="text-base font-bold text-gray-950">Create New Workflow</h2>
@@ -510,7 +520,7 @@ export default function WorkflowsDashboardPage() {
                   type="text"
                   required
                   autoFocus
-                  placeholder="e.g. Razorpay Order Fraud Check"
+                  placeholder="e.g. Stripe Order Fraud Check"
                   value={newWorkflowName}
                   onChange={(e) => setNewWorkflowName(e.target.value)}
                   className="w-full px-3 py-2 text-xs bg-gray-50 border border-gray-300 rounded-xl focus:border-ovra-orange focus:bg-white outline-none transition-all"
@@ -539,7 +549,7 @@ export default function WorkflowsDashboardPage() {
                     onClick={() => setSelectedStarter("blank")}
                     className={`flex items-start gap-3 p-3 rounded-xl border cursor-pointer transition-all ${
                       selectedStarter === "blank"
-                        ? "border-ovra-orange bg-orange-50/30"
+                        ? "border-ovra-orange bg-blue-50/30"
                         : "border-gray-200 hover:border-gray-300"
                     }`}
                   >
@@ -564,7 +574,7 @@ export default function WorkflowsDashboardPage() {
                     onClick={() => setSelectedStarter("ai_triage")}
                     className={`flex items-start gap-3 p-3 rounded-xl border cursor-pointer transition-all ${
                       selectedStarter === "ai_triage"
-                        ? "border-ovra-orange bg-orange-50/30"
+                        ? "border-ovra-orange bg-blue-50/30"
                         : "border-gray-200 hover:border-gray-300"
                     }`}
                   >
