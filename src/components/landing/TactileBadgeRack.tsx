@@ -67,7 +67,7 @@ export function TactileBadgeRack() {
 
   return (
     <section className="relative w-full bg-[#FAF7F2] py-20 px-6 sm:px-10 lg:px-16 border-b border-black/10 select-none">
-      <div className="max-w-5xl mx-auto text-center">
+      <div className="max-w-5xl mx-auto text-center scroll-reveal">
         {/* Handwritten Style Annotation (Robin reference) */}
         <div className="inline-block px-3 py-1 bg-white border border-black/10 rounded-full text-xs font-mono text-gray-600 shadow-2xs mb-4 rotate-[-1deg]">
           ✦ engineering details everyone forgets

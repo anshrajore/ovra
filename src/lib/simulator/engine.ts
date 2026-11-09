@@ -7,6 +7,14 @@ import {
 import { RealtimeProvider, ExecutionEventPayload } from "../providers/realtime";
 import { WorkflowDefinition, WorkflowNodeData } from "../types/workflow";
 import { nodeRegistry, createMockExecutionContext } from "@/lib/node-platform";
+import {
+  manualTriggerNode,
+  httpRequestNode,
+  ifConditionNode,
+  setFieldsNode,
+} from "@/lib/runtime/nodes/core-nodes";
+import { slackPostMessageNode } from "@/lib/runtime/nodes/slack-node";
+import { OVRAItem, NodeExecutionContext } from "@/lib/runtime/types";
 
 // Global in-memory run store for local development and serverless previews
 const executionHistoryStore = new Map<string, ExecutionResult>();
@@ -167,70 +175,94 @@ export class BoundedExecutionSimulator implements ExecutionProvider {
       // Visual delay for realistic UX demonstration
       await delay(700);
 
-      // Check if node is registered in NodePlatform
-      const registeredNode = nodeRegistry.getNode(node.type);
+      // Real Node Runtime Execution Context
+      const inputItem: OVRAItem = {
+        json: { ...currentPayload },
+        pairedItem: { nodeId: node.id, itemIndex: 0 },
+        metadata: {
+          sourceNodeId: node.id,
+          sourceExecutionId: executionId,
+          timestamp: new Date().toISOString(),
+        },
+      };
+
+      const runtimeContext: NodeExecutionContext = {
+        workspaceId: workflow.workspaceId || "ws_enterprise_cloud",
+        executionId,
+        nodeId: node.id,
+        signal: new AbortController().signal,
+        credentials: {
+          async getLease(connectionId: string) {
+            return {
+              credentialId: connectionId,
+              data: { token: "leased_token_ephemeral" },
+              expiresAt: new Date(Date.now() + 300000).toISOString(),
+            };
+          },
+        },
+        logger: {
+          info(msg, meta) {
+            console.log(`[OVRA Engine][INFO][${node.id}] ${msg}`, meta || "");
+          },
+          warn(msg, meta) {
+            console.warn(`[OVRA Engine][WARN][${node.id}] ${msg}`, meta || "");
+          },
+          error(msg, err) {
+            console.error(`[OVRA Engine][ERROR][${node.id}] ${msg}`, err || "");
+          },
+        },
+      };
+
       let outputPayload: Record<string, unknown> = {};
 
-      if (registeredNode) {
-        try {
-          const ctx = createMockExecutionContext({
-            executionId,
-            nodeExecutionId: node.id,
-          });
-          const res = await registeredNode.execute(currentPayload, node.config || {}, ctx);
-          if (res.status === "success" && res.output) {
-            outputPayload = res.output;
-            if (node.type === "logic.if") {
-              const condResult = Boolean(outputPayload.conditionMet ?? (outputPayload.chosenBranch === "yes"));
-              selectedBranch = condResult ? "yes" : "no";
-            }
+      try {
+        if (node.type === "core.http_request") {
+          const ports = await httpRequestNode.execute([inputItem], node.config || {}, runtimeContext);
+          outputPayload = ports[0]?.items[0]?.json || { processed: true };
+          currentPayload = { ...currentPayload, ...outputPayload };
+        } else if (node.type === "logic.if") {
+          const ports = await ifConditionNode.execute([inputItem], node.config || {}, runtimeContext);
+          const truePort = ports.find((p) => p.portId === "true");
+          const isPassed = Boolean(truePort && truePort.items.length > 0);
+          selectedBranch = isPassed ? "yes" : "no";
+          outputPayload = {
+            conditionMet: isPassed,
+            chosenBranch: selectedBranch,
+            evaluatedItem: isPassed ? truePort?.items[0]?.json : ports.find((p) => p.portId === "false")?.items[0]?.json,
+          };
+          currentPayload = { ...currentPayload, ...outputPayload };
+        } else if (node.type === "data.set") {
+          const ports = await setFieldsNode.execute([inputItem], node.config || {}, runtimeContext);
+          outputPayload = ports[0]?.items[0]?.json || { processed: true };
+          currentPayload = { ...currentPayload, ...outputPayload };
+        } else if (node.type === "comm.slack") {
+          const ports = await slackPostMessageNode.execute([inputItem], node.config || {}, runtimeContext);
+          outputPayload = ports[0]?.items[0]?.json || { processed: true };
+          currentPayload = { ...currentPayload, ...outputPayload };
+        } else if (node.type === "core.manual_trigger" || node.type === "core.webhook") {
+          const ports = await manualTriggerNode.execute([inputItem], node.config || {}, runtimeContext);
+          outputPayload = ports[0]?.items[0]?.json || { processed: true };
+          currentPayload = { ...currentPayload, ...outputPayload };
+        } else {
+          // Check if registered in legacy registry
+          const registered = nodeRegistry.getNode(node.type);
+          if (registered) {
+            const legacyCtx = createMockExecutionContext({ executionId, nodeExecutionId: node.id });
+            const res = await registered.execute(currentPayload, node.config || {}, legacyCtx);
+            outputPayload = res.output || { processed: true };
             currentPayload = { ...currentPayload, ...outputPayload };
           } else {
-            outputPayload = res.output || { processed: true };
+            outputPayload = {
+              nodeType: node.type,
+              processed: true,
+              timestamp: new Date().toISOString(),
+            };
+            currentPayload = { ...currentPayload, ...outputPayload };
           }
-        } catch (err: any) {
-          console.warn(`Execution error in node ${node.id} (${node.type}):`, err);
-          outputPayload = { error: err.message, processed: true };
         }
-      } else if (node.type === "core.webhook") {
-        outputPayload = {
-          receivedAt: new Date().toISOString(),
-          headers: { "x-source": "whatsapp-cloud", "content-type": "application/json" },
-          body: { ...currentPayload },
-        };
-      } else if (node.type === "ai.agent") {
-        const score = 0.88;
-        outputPayload = {
-          qualificationScore: score,
-          intent: "Enterprise High-Priority",
-          analysis: "Lead operates a 180-employee company with INR 45Cr revenue. Strong match for OVRA Enterprise.",
-          recommendedAction: score >= 0.7 ? "Notify Sales Team immediately" : "Send standard nurture email",
-        };
-        currentPayload = { ...currentPayload, ...outputPayload };
-      } else if (node.type === "logic.if") {
-        const score = (currentPayload.qualificationScore as number) ?? 0.85;
-        const conditionMet = score >= 0.7;
-        selectedBranch = conditionMet ? "yes" : "no";
-        outputPayload = {
-          evaluatedCondition: "score >= 0.7",
-          conditionMet,
-          chosenBranch: selectedBranch,
-        };
-      } else if (node.type === "comm.slack") {
-        outputPayload = {
-          channel: "#sales-leads",
-          messageSent: true,
-          timestamp: new Date().toISOString(),
-          preview: `⚡ *High Priority Lead Qualified*: Aarav Sharma (TechScale India) - Score: 0.88`,
-        };
-      } else if (node.type === "comm.email") {
-        outputPayload = {
-          to: currentPayload.email || "aarav.sharma@techscale.in",
-          subject: "Welcome to OVRA — Scalable Enterprise Automation",
-          status: "queued",
-        };
-      } else {
-        outputPayload = { processed: true, timestamp: new Date().toISOString() };
+      } catch (err: any) {
+        console.warn(`[OVRA Engine] Execution caught error in ${node.id} (${node.type}):`, err);
+        outputPayload = { error: err.message || String(err), status: "failed" };
       }
 
       // Mark success

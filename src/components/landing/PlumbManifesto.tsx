@@ -33,7 +33,7 @@ export function PlumbManifesto() {
       {/* Background radial specular glow */}
       <div className="absolute top-1/4 left-1/2 -translate-x-1/2 w-[700px] h-[350px] bg-gradient-to-b from-[#2342FF]/15 to-transparent rounded-full blur-3xl pointer-events-none" />
 
-      <div className="max-w-5xl mx-auto relative z-10">
+      <div className="max-w-5xl mx-auto relative z-10 scroll-reveal">
         {/* Editorial Subtitle */}
         <div className="text-xs font-bold tracking-[0.25em] uppercase text-white/50 mb-8 flex items-center gap-2">
           <span className="w-2 h-2 rounded-full bg-[#2342FF]" />

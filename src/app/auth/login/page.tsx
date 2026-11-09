@@ -42,6 +42,7 @@ export default function LoginPage() {
         return;
       }
 
+      localStorage.setItem("ovra_session_active", "true");
       setSuccessMsg("Signed in successfully. Redirecting to workspace...");
       setTimeout(() => {
         router.push("/studio");

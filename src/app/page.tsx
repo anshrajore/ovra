@@ -5,10 +5,14 @@ import { RobinProjectFolders } from "@/components/landing/RobinProjectFolders";
 import { TactileBadgeRack } from "@/components/landing/TactileBadgeRack";
 import { LandingApiInspector } from "@/components/landing/LandingApiInspector";
 import { ArcaFooter } from "@/components/landing/ArcaFooter";
+import { ScrollRevealObserver } from "@/components/landing/ScrollRevealObserver";
 
 export default function LandingPage() {
   return (
     <main className="w-full min-h-screen bg-[#08090C] text-white flex flex-col overflow-x-hidden selection:bg-[#2342FF] selection:text-white">
+      {/* Scroll Triggered Entrance Observer */}
+      <ScrollRevealObserver />
+
       {/* 1. Floating Glassmorphic Top Navbar (Plumb & ARCA) */}
       <PlumbArcaNavbar />
 

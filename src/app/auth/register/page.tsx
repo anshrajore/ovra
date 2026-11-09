@@ -61,6 +61,7 @@ export default function RegisterPage() {
         return;
       }
 
+      localStorage.setItem("ovra_session_active", "true");
       setSuccessMsg("Account created! Redirecting to onboarding...");
       setTimeout(() => {
         router.push("/onboarding");

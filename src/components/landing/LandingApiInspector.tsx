@@ -29,14 +29,14 @@ export function LandingApiInspector() {
     test: {
       method: "POST",
       path: "/api/v1/nodes/test",
-      curl: `curl -X POST https://ovra.io/api/v1/nodes/test \\\n  -H "Content-Type: application/json" \\\n  -d '{"nodeType": "ai.gemini_flash", "input": {"prompt": "Classify FHIR alert"}}'`,
+      curl: `curl -X POST https://ovra.io/api/v1/nodes/test \\\n  -H "Content-Type: application/json" \\\n  -d '{"nodeType": "ai.gemini_flash", "input": {"prompt": "Classify enterprise telemetry alert"}}'`,
       sampleResponse: {
         nodeType: "ai.gemini_flash",
         status: "success",
         durationMs: 14.8,
         output: {
-          triageLevel: "EMERGENCY_LEVEL_1",
-          recommendedDepartment: "Cardiology",
+          triageLevel: "PRIORITY_1_CRITICAL",
+          recommendedDepartment: "DevOps_Reliability",
           tokensUsed: 142,
           securityChecks: { ssrfProtected: true, evalFree: true },
         },
@@ -75,7 +75,7 @@ export function LandingApiInspector() {
 
   return (
     <section className="relative w-full bg-[#08090C] text-white py-24 px-6 sm:px-10 lg:px-16 border-b border-white/10 select-none">
-      <div className="max-w-6xl mx-auto">
+      <div className="max-w-6xl mx-auto scroll-reveal">
         <div className="flex flex-col md:flex-row md:items-end justify-between mb-10 gap-4">
           <div>
             <div className="flex items-center gap-2 text-xs font-bold uppercase tracking-widest text-[#2342FF] mb-2">

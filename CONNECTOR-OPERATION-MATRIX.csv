@@ -1,0 +1,19 @@
+connector_id,resource,operation_id,display_name,kind,manifest_path,executor_path,auth_type,credential_leased,real_status,tests_present
+http-client,request,httpRequest,HTTP Request,action,src/lib/node-platform/nodes/core-http.ts,src/lib/node-platform/nodes/core-http.ts:116,bearer|api_key,false,PARTIAL,false
+webhook,event,inboundWebhook,Inbound Webhook,trigger,src/lib/node-platform/nodes/core-triggers.ts,src/lib/simulator/engine.ts:195,hmac,false,MOCK,false
+manual,execution,start,Manual Trigger,trigger,src/lib/node-platform/nodes/core-triggers.ts,src/lib/node-platform/nodes/core-triggers.ts:30,none,false,PARTIAL,false
+scheduler,cron,cronSchedule,Cron Schedule,trigger,src/lib/node-platform/nodes/core-triggers.ts,src/lib/node-platform/nodes/core-triggers.ts:80,none,false,MOCK,false
+logic,branch,condition,IF Condition,control,src/lib/node-platform/nodes/core-logic.ts,src/lib/node-platform/nodes/core-logic.ts:75,none,false,UNWIRED,false
+logic,router,switchCase,Switch / Router,control,src/lib/node-platform/nodes/core-logic.ts,src/lib/node-platform/nodes/core-logic.ts:135,none,false,UNWIRED,false
+logic,batch,splitBatches,Loop / Batch,control,src/lib/node-platform/nodes/core-logic.ts,src/lib/node-platform/nodes/core-logic.ts:195,none,false,STATIC,false
+logic,stream,mergeStreams,Merge Streams,control,src/lib/node-platform/nodes/core-logic.ts,src/lib/node-platform/nodes/core-logic.ts:240,none,false,STATIC,false
+transform,fields,editFields,Set Fields,transform,src/lib/node-platform/nodes/core-data.ts,src/lib/node-platform/nodes/core-data.ts:40,none,false,PARTIAL,false
+transform,collection,filterItems,Filter Items,transform,src/lib/node-platform/nodes/core-data.ts,src/lib/node-platform/nodes/core-data.ts:95,none,false,PARTIAL,false
+slack,message,postMessage,Post Slack Message,action,src/lib/node-platform/nodes/core-comm.ts,src/lib/node-platform/nodes/core-comm.ts:64,oauth2|bot_token,false,MOCK,false
+email,message,sendEmail,Send Email,action,src/lib/node-platform/nodes/core-comm.ts,src/lib/node-platform/nodes/core-comm.ts:130,api_key,false,MOCK,false
+google-ai,generation,generate,Gemini Flash,ai,src/lib/node-platform/nodes/core-ai.ts,src/lib/node-platform/nodes/core-ai.ts:50,api_key,false,PARTIAL,false
+agent,reasoning,autonomous,AI Agent,ai,src/lib/node-platform/nodes/core-ai.ts,src/lib/simulator/engine.ts:201,none,false,MOCK,false
+razorpay,payment,verifyPayment,Verify Payment HMAC,action,src/lib/node-platform/nodes/core-apps.ts,src/lib/node-platform/nodes/core-apps.ts:50,hmac_secret,false,PARTIAL,false
+stripe,customer,createCustomer,Create Customer,action,src/lib/node-platform/nodes/core-apps.ts,src/lib/node-platform/nodes/core-apps.ts:120,bearer,false,STATIC,false
+google-sheets,spreadsheet,appendRow,Append Row,action,MISSING,MISSING,oauth2,false,MISSING,false
+github,issue,createIssue,Create Issue,action,MISSING,MISSING,oauth2,false,MISSING,false

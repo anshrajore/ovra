@@ -65,7 +65,7 @@ export function RobinProjectFolders() {
 
   return (
     <section id="pipelines" className="relative w-full bg-[#FAF7F2] text-black py-24 sm:py-32 px-6 sm:px-10 lg:px-16 border-b border-black/10 select-none">
-      <div className="max-w-6xl mx-auto">
+      <div className="max-w-6xl mx-auto scroll-reveal">
         {/* Section Label (Robin handwritten feel) */}
         <div className="flex items-center justify-between mb-8">
           <div>
