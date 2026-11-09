@@ -2,6 +2,7 @@ import {
   OVRAExecutableNode,
   OVRAItem,
   OVRAOutputPort,
+  OVRAPairedItemRef,
   NodeExecutionContext,
   OVRAExecutionError,
 } from "../types";
@@ -51,11 +52,18 @@ export const slackPostMessageNode: OVRAExecutableNode = {
       },
       required: ["channel", "message"],
     },
+    executionMode: "per_item",
     credentialRequirements: ["slack-oauth2", "slack-webhook"],
     executionPolicy: {
       timeoutMs: 10000,
       idempotent: false,
-      maxRetries: 3,
+      concurrencyLimit: 5,
+      retryPolicy: {
+        maxRetries: 3,
+        initialIntervalMs: 500,
+        maxIntervalMs: 4000,
+        backoffMultiplier: 2,
+      },
     },
   },
   async execute(
@@ -128,6 +136,10 @@ export const slackPostMessageNode: OVRAExecutableNode = {
           );
         }
 
+        const parentRefs: OVRAPairedItemRef[] = item.pairedItems && item.pairedItems.length > 0
+          ? [...item.pairedItems, { nodeId: context.nodeId, itemIndex: i }]
+          : [{ nodeId: context.nodeId, itemIndex: i }];
+
         outputItems.push({
           json: {
             deliveryMode: "web_api",
@@ -137,12 +149,17 @@ export const slackPostMessageNode: OVRAExecutableNode = {
             message: slackData?.message,
             deliveredAt: new Date().toISOString(),
           },
+          pairedItems: parentRefs,
           pairedItem: { nodeId: context.nodeId, itemIndex: i },
         });
       }
       // Case 3: Simulation / Test Mode without live token
       else {
         context.logger.info(`Slack node in test simulation mode (no live xoxb or webhook URL provided)`);
+        const parentRefs: OVRAPairedItemRef[] = item.pairedItems && item.pairedItems.length > 0
+          ? [...item.pairedItems, { nodeId: context.nodeId, itemIndex: i }]
+          : [{ nodeId: context.nodeId, itemIndex: i }];
+
         outputItems.push({
           json: {
             deliveryMode: "dry_run",
@@ -152,6 +169,7 @@ export const slackPostMessageNode: OVRAExecutableNode = {
             notice: "Message prepared and validated against Slack chat.postMessage contract. Add a live xoxb-* bot token or webhook URL in node settings for live dispatch.",
             deliveredAt: new Date().toISOString(),
           },
+          pairedItems: parentRefs,
           pairedItem: { nodeId: context.nodeId, itemIndex: i },
         });
       }

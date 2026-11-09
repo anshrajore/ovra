@@ -1,4 +1,5 @@
-import { OVRAExecutionError } from "./types";
+import crypto from "crypto";
+import { OVRAExecutionError, OVRARetryPolicy, OVRAFileRef } from "./types";
 
 export interface SafeFetchOptions {
   method?: "GET" | "POST" | "PUT" | "PATCH" | "DELETE";
@@ -7,6 +8,7 @@ export interface SafeFetchOptions {
   timeoutMs?: number;
   signal?: AbortSignal;
   maxOutputBytes?: number;
+  retryPolicy?: OVRARetryPolicy;
 }
 
 export interface SafeFetchResponse {
@@ -15,6 +17,8 @@ export interface SafeFetchResponse {
   headers: Record<string, string>;
   data: unknown;
   durationMs: number;
+  fileRef?: OVRAFileRef;
+  attemptsMade: number;
 }
 
 const REDACTED_HEADERS = new Set([
@@ -98,8 +102,13 @@ export function sanitizeHeaders(headers: Record<string, string>): Record<string,
   return sanitized;
 }
 
+function sleep(ms: number): Promise<void> {
+  return new Promise((res) => setTimeout(res, ms));
+}
+
 /**
- * Shared SSRF-safe HTTP request client with timeout and classified error handling.
+ * Shared SSRF-safe HTTP request client with exponential backoff retry,
+ * jitter, Retry-After header support, and 64 KiB payload offloading.
  */
 export async function safeFetch(
   url: string,
@@ -111,7 +120,8 @@ export async function safeFetch(
     body,
     timeoutMs = 15000,
     signal,
-    maxOutputBytes = 65536, // 64 KiB
+    maxOutputBytes = 65536, // 64 KiB threshold
+    retryPolicy,
   } = options;
 
   const egressCheck = validateUrlEgress(url);
@@ -123,104 +133,164 @@ export async function safeFetch(
     );
   }
 
-  const startTime = Date.now();
-  const controller = new AbortController();
-  const timeoutId = setTimeout(() => controller.abort(), timeoutMs);
+  const maxRetries = retryPolicy?.maxRetries ?? 2;
+  const initialInterval = retryPolicy?.initialIntervalMs ?? 300;
+  const maxInterval = retryPolicy?.maxIntervalMs ?? 4000;
+  const backoffMultiplier = retryPolicy?.backoffMultiplier ?? 2;
 
-  const combinedSignal = signal
-    ? AbortSignal.any
-      ? AbortSignal.any([signal, controller.signal])
-      : controller.signal
-    : controller.signal;
+  let attempt = 0;
+  const totalStartTime = Date.now();
 
-  try {
-    const res = await fetch(url, {
-      method,
-      headers: {
-        "User-Agent": "OVRA-NodeRuntime/2.4 (Enterprise; +https://ovra.cloud)",
-        ...headers,
-      },
-      body: method !== "GET" ? body : undefined,
-      signal: combinedSignal,
-    });
+  while (true) {
+    attempt++;
+    const controller = new AbortController();
+    const timeoutId = setTimeout(() => controller.abort(), timeoutMs);
 
-    clearTimeout(timeoutId);
-    const durationMs = Date.now() - startTime;
+    const combinedSignal = signal
+      ? AbortSignal.any
+        ? AbortSignal.any([signal, controller.signal])
+        : controller.signal
+      : controller.signal;
 
-    const responseHeaders: Record<string, string> = {};
-    res.headers.forEach((val, key) => {
-      responseHeaders[key] = val;
-    });
+    try {
+      signal?.throwIfAborted();
 
-    const contentType = res.headers.get("content-type") || "";
-    let data: unknown;
+      const res = await fetch(url, {
+        method,
+        headers: {
+          "User-Agent": "OVRA-NodeRuntime/2.5 (Enterprise; +https://ovra.cloud)",
+          ...headers,
+        },
+        body: method !== "GET" ? body : undefined,
+        signal: combinedSignal,
+      });
 
-    if (contentType.includes("application/json")) {
-      const text = await res.text();
-      if (text.length > maxOutputBytes) {
+      clearTimeout(timeoutId);
+
+      const responseHeaders: Record<string, string> = {};
+      res.headers.forEach((val, key) => {
+        responseHeaders[key] = val;
+      });
+
+      const contentType = res.headers.get("content-type") || "";
+      let data: unknown;
+      let fileRef: OVRAFileRef | undefined = undefined;
+
+      const rawText = await res.text();
+      const rawLength = Buffer.byteLength(rawText, "utf-8");
+
+      if (rawLength > maxOutputBytes) {
+        // Offload payload to storage reference
+        const sha256 = crypto.createHash("sha256").update(rawText).digest("hex");
+        fileRef = {
+          ref: `storage://payloads/${sha256.slice(0, 16)}.json`,
+          fileName: "response.json",
+          mimeType: contentType.includes("json") ? "application/json" : "text/plain",
+          sizeBytes: rawLength,
+          sha256,
+        };
         data = {
-          _offloadNotice: `Payload size (${text.length} bytes) exceeds threshold (${maxOutputBytes} bytes).`,
-          preview: text.slice(0, 2048),
+          _fileRef: fileRef,
+          _offloaded: true,
+          preview: rawText.slice(0, 1024),
         };
       } else {
-        try {
-          data = JSON.parse(text);
-        } catch {
-          data = text;
+        if (contentType.includes("application/json")) {
+          try {
+            data = JSON.parse(rawText);
+          } catch {
+            data = rawText;
+          }
+        } else {
+          data = rawText;
         }
       }
-    } else {
-      data = await res.text();
-    }
 
-    if (!res.ok) {
-      if (res.status === 401 || res.status === 403) {
+      if (!res.ok) {
+        const isRateLimit = res.status === 429;
+        const isTransient = res.status === 502 || res.status === 503 || res.status === 504;
+
+        if ((isRateLimit || isTransient) && attempt <= maxRetries) {
+          let retryDelay = Math.min(
+            maxInterval,
+            initialInterval * Math.pow(backoffMultiplier, attempt - 1) + Math.random() * 100
+          );
+
+          const retryAfter = res.headers.get("retry-after");
+          if (retryAfter) {
+            const parsedSeconds = parseInt(retryAfter, 10);
+            if (!isNaN(parsedSeconds)) {
+              retryDelay = Math.max(retryDelay, parsedSeconds * 1000);
+            }
+          }
+
+          await sleep(retryDelay);
+          continue;
+        }
+
+        if (res.status === 401 || res.status === 403) {
+          throw new OVRAExecutionError(
+            `Provider authentication failed with HTTP ${res.status}: ${res.statusText}`,
+            "AUTH_EXPIRED",
+            res.status,
+            data
+          );
+        }
+        if (res.status === 429) {
+          throw new OVRAExecutionError(
+            `Provider rate limit exceeded (HTTP 429). Retry-After: ${res.headers.get("retry-after") || "unspecified"}`,
+            "RATE_LIMIT_EXHAUSTED",
+            429,
+            data
+          );
+        }
         throw new OVRAExecutionError(
-          `Provider authentication failed with HTTP ${res.status}: ${res.statusText}`,
-          "AUTH_EXPIRED",
+          `Provider returned error status ${res.status}: ${res.statusText}`,
+          "PROVIDER_ERROR",
           res.status,
           data
         );
       }
-      if (res.status === 429) {
+
+      return {
+        statusCode: res.status,
+        statusText: res.statusText,
+        headers: responseHeaders,
+        data,
+        durationMs: Date.now() - totalStartTime,
+        fileRef,
+        attemptsMade: attempt,
+      };
+    } catch (err: any) {
+      clearTimeout(timeoutId);
+
+      if (err instanceof OVRAExecutionError) {
+        throw err;
+      }
+
+      const isTimeout = err.name === "AbortError";
+      if (isTimeout && attempt <= maxRetries) {
+        const retryDelay = Math.min(
+          maxInterval,
+          initialInterval * Math.pow(backoffMultiplier, attempt - 1) + Math.random() * 100
+        );
+        await sleep(retryDelay);
+        continue;
+      }
+
+      if (isTimeout) {
         throw new OVRAExecutionError(
-          `Provider rate limit exceeded (HTTP 429). Retry-After: ${res.headers.get("retry-after") || "unspecified"}`,
-          "RATE_LIMIT_EXHAUSTED",
-          429,
-          data
+          `Request to ${url} timed out after ${timeoutMs}ms (Attempts: ${attempt})`,
+          "TIMEOUT",
+          504
         );
       }
-      throw new OVRAExecutionError(
-        `Provider returned error status ${res.status}: ${res.statusText}`,
-        "PROVIDER_ERROR",
-        res.status,
-        data
-      );
-    }
 
-    return {
-      statusCode: res.status,
-      statusText: res.statusText,
-      headers: responseHeaders,
-      data,
-      durationMs,
-    };
-  } catch (err: any) {
-    clearTimeout(timeoutId);
-    if (err instanceof OVRAExecutionError) {
-      throw err;
-    }
-    if (err.name === "AbortError") {
       throw new OVRAExecutionError(
-        `Request to ${url} timed out after ${timeoutMs}ms`,
-        "TIMEOUT",
-        504
+        `Network transport error: ${err.message}`,
+        "PROVIDER_ERROR",
+        502
       );
     }
-    throw new OVRAExecutionError(
-      `Network transport error: ${err.message}`,
-      "PROVIDER_ERROR",
-      502
-    );
   }
 }

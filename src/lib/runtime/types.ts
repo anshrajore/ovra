@@ -1,19 +1,29 @@
 /**
  * @ovra/runtime
- * Production Node Engine Contracts & Item Envelope Specifications
+ * Production Node Engine Contracts & Item Envelope Specifications (v2.5)
  */
 
 export interface OVRAFileRef {
-  ref: string; // Storage path or URI
+  ref: string; // Storage path or URI, e.g. 'storage://workspaces/ws_1/payloads/data.json'
   fileName: string;
   mimeType: string;
   sizeBytes: number;
   sha256?: string;
+  url?: string; // Ephemeral signed download URL
+}
+
+export interface OVRAPairedItemRef {
+  nodeId: string;
+  itemIndex: number;
+  portId?: string;
 }
 
 export interface OVRAItem {
   json: Record<string, unknown>;
   binary?: Record<string, OVRAFileRef>;
+  // Multi-parent lineage: supports 1 parent for sequential nodes, N parents for Merge nodes
+  pairedItems?: OVRAPairedItemRef[];
+  // Backwards compatibility for single-parent references
   pairedItem?: {
     nodeId: string;
     itemIndex: number;
@@ -55,6 +65,17 @@ export interface NodeExecutionContext {
   };
 }
 
+export type OVRAExecutionMode = "per_item" | "batch" | "execute_once";
+export type OVRAOnErrorPolicy = "stop_workflow" | "continue_regular_output" | "continue_error_output";
+
+export interface OVRARetryPolicy {
+  maxRetries: number;
+  initialIntervalMs: number;
+  maxIntervalMs: number;
+  backoffMultiplier: number;
+  retryableCodes?: string[];
+}
+
 export interface OVRAOperationManifest {
   operationId: string; // e.g., 'messages.send'
   connectorId: string; // e.g., 'slack'
@@ -62,6 +83,7 @@ export interface OVRAOperationManifest {
   description: string;
   kind: "trigger" | "action" | "transform" | "control";
   version: string;
+  executionMode?: OVRAExecutionMode;
   inputsSchema: Record<string, unknown>;
   outputsSchema: Record<string, unknown>;
   configSchema: Record<string, unknown>;
@@ -69,7 +91,8 @@ export interface OVRAOperationManifest {
   executionPolicy: {
     timeoutMs: number;
     idempotent: boolean;
-    maxRetries?: number;
+    concurrencyLimit?: number;
+    retryPolicy?: OVRARetryPolicy;
     maxOutputBytes?: number;
   };
 }
