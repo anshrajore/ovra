@@ -1,5 +1,7 @@
 import { validateUrlEgress, sanitizeHeaders } from "../http-transport";
 import { manualTriggerNode, ifConditionNode, setFieldsNode, mergeStreamsNode } from "../nodes/core-nodes";
+import { googleSheetsNode } from "../nodes/google-sheets-node";
+import { emailDeliveryNode } from "../nodes/email-node";
 import { RealWorkflowEngine } from "../engine";
 import { OVRAItem, NodeExecutionContext } from "../types";
 import { WorkflowDefinition } from "@/lib/types/workflow";
@@ -314,6 +316,141 @@ export async function runRuntimeContractTests(): Promise<{ passed: boolean; deta
     (finalMergedItem?.pairedItems || []).some((p) => p.nodeId === "m_branch_a") &&
     (finalMergedItem?.pairedItems || []).some((p) => p.nodeId === "m_branch_b"),
     "DAG execution preserved multi-parent lineage across branches"
+  );
+
+  // 11. Real Google Sheets Node Operations (append_row & read_rows)
+  const sheetsCtx = createMockContext("node_sheets");
+  const sheetsInput: OVRAItem[] = [
+    {
+      json: { customerId: "CUST-992", name: "Bruce Wayne", amount: "$50,000" },
+      pairedItems: [{ nodeId: "prev_crm", itemIndex: 0 }],
+    },
+  ];
+
+  const sheetsAppendPorts = await googleSheetsNode.execute(
+    sheetsInput,
+    {
+      operation: "append_row",
+      spreadsheetId: "1BxiMVs0XRA5nFMdKvBdBZjgmUUqptlbs74OgvE2upms",
+      sheetName: "Customers",
+      values: "{{customerId}}, {{name}}, {{amount}}, VIP",
+    },
+    sheetsCtx
+  );
+
+  assert(sheetsAppendPorts.length === 1 && sheetsAppendPorts[0].items.length === 1, "Google Sheets returns port 'main'");
+  const appendedItem = sheetsAppendPorts[0].items[0];
+  assert(
+    Array.isArray(appendedItem.json.appendedValues) && (appendedItem.json.appendedValues as string[])[0] === "CUST-992",
+    "Google Sheets node parsed and interpolated row values"
+  );
+  assert(
+    (appendedItem.pairedItems || []).some((p) => p.nodeId === "node_sheets"),
+    "Google Sheets output preserves item lineage in pairedItems"
+  );
+
+  const sheetsReadPorts = await googleSheetsNode.execute(
+    [],
+    {
+      operation: "read_rows",
+      spreadsheetId: "1BxiMVs0XRA5nFMdKvBdBZjgmUUqptlbs74OgvE2upms",
+      sheetName: "Sheet1",
+      range: "A1:Z50",
+    },
+    sheetsCtx
+  );
+  assert(sheetsReadPorts.length === 1 && sheetsReadPorts[0].items.length > 0, "Google Sheets read_rows executed and returned items");
+
+  // 12. Real Email Delivery Node Operations (send_email)
+  const emailCtx = createMockContext("node_email");
+  const emailInput: OVRAItem[] = [
+    {
+      json: { email: "founder@ycombinator.com", name: "Garry Tan", company: "Y Combinator" },
+      pairedItems: [{ nodeId: "prev_step", itemIndex: 0 }],
+    },
+  ];
+
+  const emailPorts = await emailDeliveryNode.execute(
+    emailInput,
+    {
+      to: "{{email}}",
+      subject: "Welcome to OVRA, {{name}}!",
+      body: "Hello {{name}}, your workspace for {{company}} is provisioned.",
+      provider: "dry_run",
+    },
+    emailCtx
+  );
+
+  assert(emailPorts.length === 1 && emailPorts[0].items.length === 1, "Email delivery node returns port 'main'");
+  const emailOutputItem = emailPorts[0].items[0];
+  assert(emailOutputItem.json.recipient === "founder@ycombinator.com", "Email node interpolated recipient address");
+  assert(emailOutputItem.json.subject === "Welcome to OVRA, Garry Tan!", "Email node interpolated subject line");
+  assert(
+    (emailOutputItem.pairedItems || []).some((p) => p.nodeId === "node_email"),
+    "Email delivery node preserves item lineage in pairedItems"
+  );
+
+  // 13. End-to-End Workflow with Sheets -> Email
+  const sheetsEmailWorkflow: WorkflowDefinition = {
+    id: "wf_test_sheets_email",
+    name: "Customer Onboarding: Sheet -> Email Alert",
+    description: "Start -> Append to Google Sheet -> Send Confirmation Email",
+    status: "published",
+    version: 1,
+    workspaceId: "ws_test_enterprise",
+    nodes: [
+      {
+        id: "se_start",
+        type: "core.manual_trigger",
+        label: "Start",
+        status: "idle",
+        config: { payload: '{"leadId": 707, "name": "Tony Stark", "email": "tony@starkindustries.com", "tier": "Enterprise"}' },
+      },
+      {
+        id: "se_sheets",
+        type: "app.google_sheets",
+        label: "Append Customer to Sheet",
+        status: "idle",
+        config: {
+          operation: "append_row",
+          spreadsheetId: "1BxiMVs0XRA5nFMdKvBdBZjgmUUqptlbs74OgvE2upms",
+          sheetName: "Leads",
+          values: "{{leadId}}, {{name}}, {{email}}, {{tier}}",
+        },
+      },
+      {
+        id: "se_email",
+        type: "comm.email",
+        label: "Send Welcome Email",
+        status: "idle",
+        config: {
+          to: "{{email}}",
+          subject: "Account Confirmation for {{name}}",
+          body: "Hello {{name}}, welcome to OVRA. Your tier is {{tier}}.",
+          provider: "dry_run",
+        },
+      },
+    ],
+    edges: [
+      { id: "see1", source: "se_start", target: "se_sheets", sourceHandle: "main" },
+      { id: "see2", source: "se_sheets", target: "se_email", sourceHandle: "main" },
+    ],
+  };
+
+  const sheetsEmailResult = await RealWorkflowEngine.executeWorkflow(sheetsEmailWorkflow, {
+    leadId: 707,
+    name: "Tony Stark",
+    email: "tony@starkindustries.com",
+    tier: "Enterprise",
+  });
+
+  assert(sheetsEmailResult.status === "SUCCESS", "Sheets -> Email workflow completed with SUCCESS");
+  assert(sheetsEmailResult.steps.length === 3, "All 3 steps in Sheets -> Email workflow executed");
+  const finalEmailStep = sheetsEmailResult.steps.find((s) => s.nodeId === "se_email");
+  assert(finalEmailStep !== undefined && finalEmailStep.status === "success", "Final email step executed successfully");
+  assert(
+    finalEmailStep?.outputPorts[0].items[0].json.recipient === "tony@starkindustries.com",
+    "Final email received customer email from upstream pipeline"
   );
 
   return { passed, details };

@@ -14,6 +14,8 @@ import {
   setFieldsNode,
 } from "@/lib/runtime/nodes/core-nodes";
 import { slackPostMessageNode } from "@/lib/runtime/nodes/slack-node";
+import { googleSheetsNode } from "@/lib/runtime/nodes/google-sheets-node";
+import { emailDeliveryNode } from "@/lib/runtime/nodes/email-node";
 import { OVRAItem, NodeExecutionContext } from "@/lib/runtime/types";
 
 // Global in-memory run store for local development and serverless previews
@@ -237,6 +239,14 @@ export class BoundedExecutionSimulator implements ExecutionProvider {
           currentPayload = { ...currentPayload, ...outputPayload };
         } else if (node.type === "comm.slack") {
           const ports = await slackPostMessageNode.execute([inputItem], node.config || {}, runtimeContext);
+          outputPayload = ports[0]?.items[0]?.json || { processed: true };
+          currentPayload = { ...currentPayload, ...outputPayload };
+        } else if (node.type === "app.google_sheets" || node.type.includes("sheets")) {
+          const ports = await googleSheetsNode.execute([inputItem], node.config || {}, runtimeContext);
+          outputPayload = ports[0]?.items[0]?.json || { processed: true };
+          currentPayload = { ...currentPayload, ...outputPayload };
+        } else if (node.type === "comm.email" || node.type.includes("email")) {
+          const ports = await emailDeliveryNode.execute([inputItem], node.config || {}, runtimeContext);
           outputPayload = ports[0]?.items[0]?.json || { processed: true };
           currentPayload = { ...currentPayload, ...outputPayload };
         } else if (node.type === "core.manual_trigger" || node.type === "core.webhook") {

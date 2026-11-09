@@ -13,6 +13,8 @@ import {
   mergeStreamsNode,
 } from "./nodes/core-nodes";
 import { slackPostMessageNode } from "./nodes/slack-node";
+import { googleSheetsNode } from "./nodes/google-sheets-node";
+import { emailDeliveryNode } from "./nodes/email-node";
 import { WorkflowDefinition, WorkflowNodeData, WorkflowConnection } from "@/lib/types/workflow";
 
 // Central runtime registry of executable nodes
@@ -31,6 +33,11 @@ registerRuntimeNode("data.set", setFieldsNode);
 registerRuntimeNode("logic.merge", mergeStreamsNode);
 registerRuntimeNode("core.merge", mergeStreamsNode);
 registerRuntimeNode("comm.slack", slackPostMessageNode);
+registerRuntimeNode("comm.email", emailDeliveryNode);
+registerRuntimeNode("email.send", emailDeliveryNode);
+registerRuntimeNode("app.google_sheets", googleSheetsNode);
+registerRuntimeNode("google_sheets.append_row", googleSheetsNode);
+registerRuntimeNode("google_sheets.read_rows", googleSheetsNode);
 
 export interface StepExecutionRecord {
   nodeId: string;
