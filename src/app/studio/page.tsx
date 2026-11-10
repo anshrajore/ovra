@@ -5,7 +5,7 @@ import { useSearchParams } from "next/navigation";
 import { StudioHeader } from "@/components/studio/Header";
 import { StudioSidebar } from "@/components/studio/Sidebar";
 import { WorkflowCanvas } from "@/components/studio/WorkflowCanvas";
-import { AIStudioModal } from "@/components/studio/AIStudioModal";
+import { AIAssistantDrawer, WorkflowPatch } from "@/components/studio/AIAssistantDrawer";
 import { initialWorkflow } from "@/lib/data/initial-workflow";
 import { useAppStore } from "@/lib/store/use-app-store";
 import { WorkflowDefinition } from "@/lib/types/workflow";
@@ -14,7 +14,8 @@ function StudioContent() {
   const searchParams = useSearchParams();
   const workflowId = searchParams.get("id");
   const store = useAppStore();
-  const [isAIStudioOpen, setIsAIStudioOpen] = useState(false);
+  const [isAIDrawerOpen, setIsAIDrawerOpen] = useState(false);
+  const [isExecutionRunning, setIsExecutionRunning] = useState(false);
 
   const activeWorkflow: WorkflowDefinition = useMemo(() => {
     if (workflowId) {
@@ -36,28 +37,54 @@ function StudioContent() {
     };
   }, [workflowId, store]);
 
+  const handleApplyPatch = (patch: WorkflowPatch) => {
+    // Non-destructive patch: Add nodes with clean positioning, add edges, bump version
+    const updatedNodes = [...activeWorkflow.nodes, ...patch.addNodes];
+    const updatedEdges = [...activeWorkflow.edges, ...patch.addEdges];
+    const nextVersion = (activeWorkflow.version || 1) + 1;
+
+    const patchedWorkflow: WorkflowDefinition = {
+      ...activeWorkflow,
+      nodes: updatedNodes,
+      edges: updatedEdges,
+      version: nextVersion,
+      lastSavedAt: "Draft auto-saved via AI Assistant",
+    };
+
+    store.saveWorkflow(patchedWorkflow);
+  };
+
   return (
     <div className="flex flex-col h-screen w-screen overflow-hidden bg-white select-none">
       {/* Top Application Navigation */}
-      <StudioHeader onOpenAIStudio={() => setIsAIStudioOpen(true)} />
+      <StudioHeader onOpenAIStudio={() => setIsAIDrawerOpen(true)} />
 
       {/* Main Workspace: Left Sidebar + Workflow Canvas */}
-      <div className="flex-1 flex overflow-hidden">
+      <div className="flex-1 flex overflow-hidden relative">
         {/* Left Sidebar */}
-        <StudioSidebar activeTab="workflows" />
+        <StudioSidebar
+          activeTab="workflows"
+          onOpenAIStudio={() => setIsAIDrawerOpen(true)}
+        />
 
         {/* Center/Right Main Canvas */}
-        <WorkflowCanvas key={activeWorkflow.id} initialWorkflow={activeWorkflow} />
-      </div>
+        <div className="flex-1 relative h-full w-full overflow-hidden">
+          <WorkflowCanvas
+            key={`${activeWorkflow.id}_v${activeWorkflow.version || 1}`}
+            initialWorkflow={activeWorkflow}
+            onExecutionStateChange={(running) => setIsExecutionRunning(running)}
+          />
 
-      {/* AI Studio Global Trigger */}
-      <AIStudioModal
-        isOpen={isAIStudioOpen}
-        onClose={() => setIsAIStudioOpen(false)}
-        onApplyWorkflow={(wf) => {
-          store.saveWorkflow(wf);
-        }}
-      />
+          {/* In-Canvas Right Docked AI Assistant Drawer */}
+          <AIAssistantDrawer
+            isOpen={isAIDrawerOpen}
+            onClose={() => setIsAIDrawerOpen(false)}
+            activeWorkflow={activeWorkflow}
+            isExecutionRunning={isExecutionRunning}
+            onApplyPatch={handleApplyPatch}
+          />
+        </div>
+      </div>
     </div>
   );
 }

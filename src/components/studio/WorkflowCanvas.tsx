@@ -34,6 +34,7 @@ import { appStore } from "@/lib/store/app-store";
 
 interface WorkflowCanvasProps {
   initialWorkflow: WorkflowDefinition;
+  onExecutionStateChange?: (isRunning: boolean) => void;
 }
 
 interface HistorySnapshot {
@@ -42,7 +43,7 @@ interface HistorySnapshot {
   workflowNodes: WorkflowNodeData[];
 }
 
-export function WorkflowCanvas({ initialWorkflow }: WorkflowCanvasProps) {
+export function WorkflowCanvas({ initialWorkflow, onExecutionStateChange }: WorkflowCanvasProps) {
   const router = useRouter();
   const [workflow, setWorkflow] = useState<WorkflowDefinition>(() => {
     // Check if store already has a stored version of this workflow
@@ -428,6 +429,7 @@ export function WorkflowCanvas({ initialWorkflow }: WorkflowCanvasProps) {
   const handleTestRun = async () => {
     if (isRunning) return;
     setIsRunning(true);
+    onExecutionStateChange?.(true);
 
     // Reset node states to idle
     setNodes((nds) =>
@@ -441,7 +443,7 @@ export function WorkflowCanvas({ initialWorkflow }: WorkflowCanvasProps) {
     const executionId = `exec_${Date.now()}`;
 
     try {
-      await defaultExecutionProvider.executeWorkflowGraph(
+      const execResult = await defaultExecutionProvider.executeWorkflowGraph(
         workflow,
         executionId,
         (nodeId, state) => {
@@ -478,39 +480,64 @@ export function WorkflowCanvas({ initialWorkflow }: WorkflowCanvasProps) {
         }
       );
 
-      // Record finished execution in app store
+      // Record truthful execution in app store
       const execDuration = Date.now() - execStartTime;
+      const isOverallSuccess = execResult.status === "SUCCESS";
+      const hasFailed = execResult.status === "FAILED";
+
       appStore.addExecutionRecord({
         id: executionId,
         workflowId: workflow.id,
         workflowName: workflow.name,
-        status: "SUCCESS",
+        status: hasFailed ? "FAILED" : isOverallSuccess ? "SUCCESS" : "FAILED",
         triggerType: "manual",
         startedAt: new Date(execStartTime).toISOString(),
         durationMs: execDuration,
+        nodeCount: workflow.nodes.length,
+        steps: workflow.nodes.map((n) => {
+          const stepResult = execResult.nodeResults[n.id];
+          return {
+            nodeId: n.id,
+            nodeLabel: n.label,
+            nodeType: n.type,
+            status: (stepResult?.status as any) || (hasFailed ? "failed" : "success"),
+            durationMs: stepResult?.durationMs || n.executionDurationMs || 45,
+            inputs: stepResult?.inputPayload || n.inputs,
+            outputs: stepResult?.outputPayload || n.outputs,
+          };
+        }),
+      });
+
+      // Trigger Confetti Celebration ONLY on genuine SUCCESS
+      if (isOverallSuccess) {
+        confetti({
+          particleCount: 80,
+          spread: 60,
+          origin: { y: 0.6 },
+          colors: ["#2342FF", "#10B981", "#6366F1", "#FACC15"],
+        });
+      }
+    } catch (err) {
+      console.error("Test run error:", err);
+      appStore.addExecutionRecord({
+        id: executionId,
+        workflowId: workflow.id,
+        workflowName: workflow.name,
+        status: "FAILED",
+        triggerType: "manual",
+        startedAt: new Date(execStartTime).toISOString(),
+        durationMs: Date.now() - execStartTime,
         nodeCount: workflow.nodes.length,
         steps: workflow.nodes.map((n) => ({
           nodeId: n.id,
           nodeLabel: n.label,
           nodeType: n.type,
-          status: "success",
-          durationMs: n.executionDurationMs || 45,
-          inputs: n.inputs,
-          outputs: n.outputs,
+          status: "failed",
         })),
       });
-
-      // Trigger Confetti Celebration!
-      confetti({
-        particleCount: 80,
-        spread: 60,
-        origin: { y: 0.6 },
-        colors: ["#FF5C00", "#10B981", "#6366F1", "#FACC15"],
-      });
-    } catch (err) {
-      console.error("Test run error:", err);
     } finally {
       setIsRunning(false);
+      onExecutionStateChange?.(false);
     }
   };
 

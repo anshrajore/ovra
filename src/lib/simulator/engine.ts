@@ -78,7 +78,9 @@ export class BoundedExecutionSimulator implements ExecutionProvider {
     this.realtime = realtime;
   }
 
-  async startExecution(request: ExecutionRequest): Promise<ExecutionResult> {
+  async startExecution(
+    request: ExecutionRequest & { workflow?: WorkflowDefinition }
+  ): Promise<ExecutionResult> {
     const executionId = `exec_${Date.now()}_${Math.random().toString(36).substring(2, 7)}`;
     const startedAt = new Date().toISOString();
 
@@ -102,6 +104,15 @@ export class BoundedExecutionSimulator implements ExecutionProvider {
       data: { triggerType: request.triggerType },
     });
 
+    // If a workflow graph is provided (or if it's the initial workflow), execute in background
+    if (request.workflow) {
+      setTimeout(() => {
+        this.executeWorkflowGraph(request.workflow!, executionId).catch((err) => {
+          console.error(`[OVRA Simulator] Background execution failed for ${executionId}:`, err);
+        });
+      }, 0);
+    }
+
     return initialResult;
   }
 
@@ -113,6 +124,8 @@ export class BoundedExecutionSimulator implements ExecutionProvider {
     const startTime = Date.now();
     let seq = 2;
     const nodeResults: Record<string, NodeExecutionState> = {};
+    let hasUnhandledFatalError = false;
+    let hasHandledErrors = false;
 
     // 1. Initialize node results
     for (const node of workflow.nodes) {
@@ -275,31 +288,67 @@ export class BoundedExecutionSimulator implements ExecutionProvider {
         outputPayload = { error: err.message || String(err), status: "failed" };
       }
 
-      // Mark success
       const durationMs = Date.now() - stepStartTime;
-      const successState: NodeExecutionState = {
-        nodeId: node.id,
-        nodeType: node.type,
-        status: "success",
-        startedAt: runningState.startedAt,
-        finishedAt: new Date().toISOString(),
-        durationMs,
-        inputPayload: runningState.inputPayload,
-        outputPayload,
-      };
-      nodeResults[node.id] = successState;
-      if (onStep) onStep(node.id, successState);
+      const isStepFailed = outputPayload?.status === "failed" || Boolean(outputPayload?.error);
 
-      await this.realtime.emitEvent({
-        eventId: `evt_${Date.now()}_${seq++}`,
-        sequenceNumber: seq,
-        executionId,
-        workflowId: workflow.id,
-        type: "node.completed",
-        nodeId: node.id,
-        timestamp: new Date().toISOString(),
-        data: outputPayload,
-      });
+      if (isStepFailed) {
+        const failedState: NodeExecutionState = {
+          nodeId: node.id,
+          nodeType: node.type,
+          status: "failed",
+          startedAt: runningState.startedAt,
+          finishedAt: new Date().toISOString(),
+          durationMs,
+          inputPayload: runningState.inputPayload,
+          outputPayload,
+          error: (outputPayload?.error as string) || "Node execution encountered an error",
+        };
+        nodeResults[node.id] = failedState;
+        if (onStep) onStep(node.id, failedState);
+
+        await this.realtime.emitEvent({
+          eventId: `evt_${Date.now()}_${seq++}`,
+          sequenceNumber: seq,
+          executionId,
+          workflowId: workflow.id,
+          type: "node.failed",
+          nodeId: node.id,
+          timestamp: new Date().toISOString(),
+          data: outputPayload,
+        });
+
+        const onErrorPolicy = (node.config as any)?.onError || "stop_workflow";
+        if (onErrorPolicy === "stop_workflow") {
+          hasUnhandledFatalError = true;
+          break; // Stop downstream execution immediately
+        } else {
+          hasHandledErrors = true;
+        }
+      } else {
+        const successState: NodeExecutionState = {
+          nodeId: node.id,
+          nodeType: node.type,
+          status: "success",
+          startedAt: runningState.startedAt,
+          finishedAt: new Date().toISOString(),
+          durationMs,
+          inputPayload: runningState.inputPayload,
+          outputPayload,
+        };
+        nodeResults[node.id] = successState;
+        if (onStep) onStep(node.id, successState);
+
+        await this.realtime.emitEvent({
+          eventId: `evt_${Date.now()}_${seq++}`,
+          sequenceNumber: seq,
+          executionId,
+          workflowId: workflow.id,
+          type: "node.completed",
+          nodeId: node.id,
+          timestamp: new Date().toISOString(),
+          data: outputPayload,
+        });
+      }
 
       // Find next node
       if (node.type === "logic.if") {
@@ -328,14 +377,17 @@ export class BoundedExecutionSimulator implements ExecutionProvider {
     }
 
     const totalDurationMs = Date.now() - startTime;
+    const terminalStatus: "SUCCESS" | "FAILED" = hasUnhandledFatalError ? "FAILED" : "SUCCESS";
+
     const finalResult: ExecutionResult = {
       executionId,
       workflowId: workflow.id,
-      status: "SUCCESS",
+      status: terminalStatus,
       startedAt: new Date(startTime).toISOString(),
       finishedAt: new Date().toISOString(),
       durationMs: totalDurationMs,
       nodeResults,
+      error: hasUnhandledFatalError ? "Workflow stopped due to unhandled node failure" : undefined,
     };
 
     executionHistoryStore.set(executionId, finalResult);
@@ -345,9 +397,13 @@ export class BoundedExecutionSimulator implements ExecutionProvider {
       sequenceNumber: seq,
       executionId,
       workflowId: workflow.id,
-      type: "execution.completed",
+      type: hasUnhandledFatalError ? "execution.failed" : "execution.completed",
       timestamp: new Date().toISOString(),
-      data: { durationMs: totalDurationMs },
+      data: {
+        durationMs: totalDurationMs,
+        status: terminalStatus,
+        hasHandledErrors,
+      },
     });
 
     return finalResult;

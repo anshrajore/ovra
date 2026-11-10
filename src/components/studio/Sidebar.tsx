@@ -25,12 +25,14 @@ interface StudioSidebarProps {
   activeTab?: string;
   onSelectTab?: (tab: string) => void;
   onSelectProject?: (project: string) => void;
+  onOpenAIStudio?: () => void;
 }
 
 export function StudioSidebar({
   activeTab,
   onSelectTab,
   onSelectProject,
+  onOpenAIStudio,
 }: StudioSidebarProps) {
   const pathname = usePathname();
   const [selectedProject, setSelectedProject] = useState("Default Project");
@@ -81,6 +83,21 @@ export function StudioSidebar({
                 activeTab === item.id ||
                 pathname === item.href ||
                 (item.id === "workflows" && pathname === "/studio");
+
+              if (item.id === "ai-studio" && onOpenAIStudio) {
+                return (
+                  <button
+                    key={item.id}
+                    type="button"
+                    onClick={onOpenAIStudio}
+                    className="flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-xs font-semibold text-gray-600 hover:text-gray-950 hover:bg-black/5 transition-all text-left"
+                  >
+                    <Icon className="w-4 h-4 text-ovra-blue" />
+                    <span>{item.label}</span>
+                  </button>
+                );
+              }
+
               return (
                 <Link
                   key={item.id}

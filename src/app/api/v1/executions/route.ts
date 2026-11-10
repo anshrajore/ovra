@@ -12,6 +12,7 @@ export async function POST(request: Request) {
       triggerPayload: body.payload || {},
       workspaceId: body.workspaceId || "ws_team_workspace",
       organizationId: "org_default",
+      workflow: body.workflow,
     });
 
     return NextResponse.json({
