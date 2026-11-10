@@ -224,7 +224,7 @@ export function AIAssistantDrawer({
   };
 
   return (
-    <aside className="w-96 lg:w-[420px] h-full bg-[#0D0F14] text-white border-l border-white/10 flex flex-col justify-between shrink-0 z-30 select-none shadow-2xl animate-in slide-in-from-right duration-200">
+    <aside className="absolute right-0 top-0 bottom-0 w-96 lg:w-[420px] h-full bg-[#0D0F14] text-white border-l border-white/10 flex flex-col justify-between shrink-0 z-50 select-none shadow-2xl animate-in slide-in-from-right duration-200">
       {/* Header */}
       <div className="p-4 border-b border-white/10 flex items-center justify-between bg-[#111319]">
         <div className="flex items-center gap-2.5">

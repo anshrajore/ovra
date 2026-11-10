@@ -73,6 +73,7 @@ function StudioContent() {
             key={`${activeWorkflow.id}_v${activeWorkflow.version || 1}`}
             initialWorkflow={activeWorkflow}
             onExecutionStateChange={(running) => setIsExecutionRunning(running)}
+            onOpenAIStudio={() => setIsAIDrawerOpen(true)}
           />
 
           {/* In-Canvas Right Docked AI Assistant Drawer */}

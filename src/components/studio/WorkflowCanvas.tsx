@@ -35,6 +35,7 @@ import { appStore } from "@/lib/store/app-store";
 interface WorkflowCanvasProps {
   initialWorkflow: WorkflowDefinition;
   onExecutionStateChange?: (isRunning: boolean) => void;
+  onOpenAIStudio?: () => void;
 }
 
 interface HistorySnapshot {
@@ -43,7 +44,11 @@ interface HistorySnapshot {
   workflowNodes: WorkflowNodeData[];
 }
 
-export function WorkflowCanvas({ initialWorkflow, onExecutionStateChange }: WorkflowCanvasProps) {
+export function WorkflowCanvas({
+  initialWorkflow,
+  onExecutionStateChange,
+  onOpenAIStudio,
+}: WorkflowCanvasProps) {
   const router = useRouter();
   const [workflow, setWorkflow] = useState<WorkflowDefinition>(() => {
     // Check if store already has a stored version of this workflow
@@ -767,6 +772,7 @@ export function WorkflowCanvas({ initialWorkflow, onExecutionStateChange }: Work
         }}
         onTestRun={handleTestRun}
         onOpenCode={() => setIsCodeModalOpen(true)}
+        onOpenAIStudio={onOpenAIStudio}
         onDuplicateWorkflow={handleDuplicateWorkflow}
         onExportJSON={handleExportJSON}
         onImportJSON={handleImportJSONClick}

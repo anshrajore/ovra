@@ -18,6 +18,7 @@ import {
   Trash2,
   Activity,
   AlertCircle,
+  Sparkles,
 } from "lucide-react";
 import { appStore } from "@/lib/store/app-store";
 import { VersionHistoryDrawer } from "./VersionHistoryDrawer";
@@ -33,6 +34,7 @@ interface CanvasHeaderProps {
   onUpdateName?: (name: string) => void;
   onTestRun?: () => void;
   onOpenCode?: () => void;
+  onOpenAIStudio?: () => void;
   onDuplicateWorkflow?: () => void;
   onExportJSON?: () => void;
   onImportJSON?: () => void;
@@ -53,6 +55,7 @@ export function CanvasHeader({
   onUpdateName,
   onTestRun,
   onOpenCode,
+  onOpenAIStudio,
   onDuplicateWorkflow,
   onExportJSON,
   onImportJSON,
@@ -182,6 +185,18 @@ export function CanvasHeader({
 
         {/* Right: Actions */}
         <div className="flex items-center gap-2.5">
+          {/* AI Copilot In-Canvas Trigger */}
+          {onOpenAIStudio && (
+            <button
+              onClick={onOpenAIStudio}
+              title="Open AI Assistant Drawer"
+              className="px-3 py-1.5 bg-blue-50 hover:bg-blue-100 text-[#2342FF] border border-blue-200/80 rounded-full text-xs font-semibold flex items-center gap-1.5 shadow-2xs transition-all"
+            >
+              <Sparkles className="w-3.5 h-3.5" />
+              <span>AI Copilot</span>
+            </button>
+          )}
+
           {/* Code / JSON Viewer */}
           <button
             onClick={onOpenCode}
