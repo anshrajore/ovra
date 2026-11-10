@@ -43,7 +43,17 @@ export function ProGsapLoader({ onComplete, autoDismiss = true }: ProGsapLoaderP
     };
 
     window.addEventListener("resize", handleResize);
-    return () => window.removeEventListener("resize", handleResize);
+
+    // Guaranteed failsafe: dismiss loader unconditionally after 2200ms
+    const safetyTimer = setTimeout(() => {
+      setVisible(false);
+      onComplete?.();
+    }, 2200);
+
+    return () => {
+      window.removeEventListener("resize", handleResize);
+      clearTimeout(safetyTimer);
+    };
   }, [autoDismiss, onComplete]);
 
   // Words cycle & Curved SVG Pull Exit

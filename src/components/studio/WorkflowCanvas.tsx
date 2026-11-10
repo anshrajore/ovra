@@ -837,38 +837,7 @@ export function WorkflowCanvas({ initialWorkflow, onExecutionStateChange }: Work
           />
         </ReactFlow>
 
-        {/* Empty Canvas Overlay Prompt */}
-        {nodes.length === 0 && (
-          <div className="absolute inset-0 z-10 pointer-events-none flex items-center justify-center p-6">
-            <div className="pointer-events-auto bg-white/95 backdrop-blur-md border border-ovra-border/80 shadow-lg rounded-3xl p-8 max-w-md text-center flex flex-col items-center gap-4 animate-in fade-in zoom-in-95 duration-200">
-              <div className="w-12 h-12 rounded-2xl bg-blue-50 border border-blue-200/70 flex items-center justify-center text-[#2342FF] shadow-2xs">
-                <Workflow className="w-6 h-6" />
-              </div>
-              <div>
-                <h3 className="text-base font-bold text-gray-950">Your Canvas is Ready</h3>
-                <p className="text-xs text-gray-500 mt-1.5 leading-relaxed">
-                  Start building your automation by dropping a trigger node (Webhook, Form, Schedule) or generating a complete graph with AI.
-                </p>
-              </div>
-              <div className="flex items-center gap-2.5 pt-2">
-                <button
-                  onClick={() => setIsNodeLibraryOpen(true)}
-                  className="px-4 py-2.5 bg-ovra-orange hover:bg-ovra-orange-dark text-white rounded-xl text-xs font-semibold shadow-sm transition-all flex items-center gap-1.5"
-                >
-                  <Plus className="w-4 h-4" />
-                  Add Trigger / Node
-                </button>
-                <button
-                  onClick={() => setIsAIStudioOpen(true)}
-                  className="px-4 py-2.5 bg-gray-50 hover:bg-gray-100 border border-gray-200 text-gray-800 rounded-xl text-xs font-semibold shadow-2xs transition-all flex items-center gap-1.5"
-                >
-                  <Sparkles className="w-4 h-4 text-ovra-orange" />
-                  Generate with AI
-                </button>
-              </div>
-            </div>
-          </div>
-        )}
+
       </div>
 
       {/* Node Inspector Drawer */}
