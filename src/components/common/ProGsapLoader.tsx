@@ -3,225 +3,177 @@
 import { useEffect, useRef, useState } from "react";
 import { gsap } from "@/animation/gsap-client";
 
+const WORDS = ["OVRA", "Connect", "Orchestrate", "Scale"];
+
 interface ProGsapLoaderProps {
   onComplete?: () => void;
-  minDuration?: number;
   autoDismiss?: boolean;
 }
 
-export function ProGsapLoader({
-  onComplete,
-  minDuration = 1.3,
-  autoDismiss = true,
-}: ProGsapLoaderProps) {
-  const containerRef = useRef<HTMLDivElement>(null);
-  const numberRef = useRef<HTMLSpanElement>(null);
-  const progressLineRef = useRef<HTMLDivElement>(null);
-  const glyphLeftNodeRef = useRef<SVGCircleElement>(null);
-  const glyphRightNodeRef = useRef<SVGCircleElement>(null);
-  const glyphBridgeRef = useRef<SVGPathElement>(null);
-  const statusLabelRef = useRef<HTMLParagraphElement>(null);
-
+export function ProGsapLoader({ onComplete, autoDismiss = true }: ProGsapLoaderProps) {
+  const [index, setIndex] = useState(0);
+  const [dimension, setDimension] = useState({ width: 0, height: 0 });
   const [visible, setVisible] = useState(true);
 
-  useEffect(() => {
-    if (typeof window === "undefined" || !containerRef.current) return;
+  const loaderRef = useRef<HTMLDivElement>(null);
+  const pathRef = useRef<SVGPathElement>(null);
+  const textRef = useRef<HTMLDivElement>(null);
 
-    // Check if user already saw the loader in this session to respect workflow navigation
-    const hasSeen = sessionStorage.getItem("ovra_loader_seen");
-    if (hasSeen && autoDismiss) {
+  // Set viewport dimensions
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+
+    // Respect session so returning users don't get blocked
+    if (autoDismiss && sessionStorage.getItem("ovra_loader_seen")) {
       setVisible(false);
       onComplete?.();
       return;
     }
 
-    const ctx = gsap.context(() => {
-      const counterObj = { val: 0 };
-      const statusSteps = [
-        "INITIALIZING ENGINE CORE",
-        "COMPILING SOVEREIGN DAG",
-        "SECURING KMS ENVELOPE",
-        "MUMBAI ap-south-1 NOMINAL",
-      ];
+    setDimension({
+      width: window.innerWidth,
+      height: window.innerHeight,
+    });
+
+    const handleResize = () => {
+      setDimension({
+        width: window.innerWidth,
+        height: window.innerHeight,
+      });
+    };
+
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, [autoDismiss, onComplete]);
+
+  // Words cycle & Curved SVG Pull Exit
+  useEffect(() => {
+    if (dimension.width === 0 || dimension.height === 0 || !visible) return;
+
+    const w = dimension.width;
+    const h = dimension.height;
+
+    // Word cycling timer
+    if (index < WORDS.length - 1) {
+      const timer = setTimeout(() => {
+        setIndex((prev) => prev + 1);
+      }, 260);
+      return () => clearTimeout(timer);
+    }
+
+    // When last word is reached, trigger the signature 21st.dev / Olivier Larose SVG Curve exit
+    const exitTimer = setTimeout(() => {
+      sessionStorage.setItem("ovra_loader_seen", "true");
+
+      const animProps = {
+        top: 0,
+        curve: 0,
+      };
 
       const tl = gsap.timeline({
         onComplete: () => {
-          sessionStorage.setItem("ovra_loader_seen", "true");
-          // Smooth curtain reveal upwards
-          gsap.to(containerRef.current, {
-            yPercent: -100,
-            duration: 0.85,
-            ease: "expo.inOut",
-            onComplete: () => {
-              setVisible(false);
-              onComplete?.();
-            },
-          });
+          setVisible(false);
+          onComplete?.();
         },
       });
 
-      // 1. Initial State Setup
-      gsap.set(glyphBridgeRef.current, { strokeDasharray: 40, strokeDashoffset: 40 });
-      gsap.set([glyphLeftNodeRef.current, glyphRightNodeRef.current], { scale: 0, transformOrigin: "50% 50%" });
-      gsap.set(progressLineRef.current, { scaleX: 0, transformOrigin: "0% 50%" });
-
-      // 2. Entrance & Kinetic Glyph Bloom
-      tl.to([glyphLeftNodeRef.current, glyphRightNodeRef.current], {
-        scale: 1,
-        duration: 0.45,
-        stagger: 0.12,
-        ease: "back.out(2)",
+      // 1. Text fades & scales out smoothly
+      tl.to(textRef.current, {
+        opacity: 0,
+        y: -15,
+        duration: 0.25,
+        ease: "power2.in",
       })
+      // 2. Animate the liquid SVG curve tension and slide up
       .to(
-        glyphBridgeRef.current,
+        animProps,
         {
-          strokeDashoffset: 0,
-          duration: 0.55,
-          ease: "power2.inOut",
-        },
-        "-=0.2"
-      )
-      // 3. Counter and Hairline Progress interpolation
-      .to(
-        counterObj,
-        {
-          val: 100,
-          duration: minDuration,
-          ease: "power2.out",
+          top: -100,
+          curve: 280,
+          duration: 0.75,
+          ease: "power3.in",
           onUpdate: () => {
-            if (numberRef.current) {
-              const currentVal = Math.floor(counterObj.val);
-              numberRef.current.textContent = currentVal < 10 ? `0${currentVal}` : `${currentVal}`;
-              
-              if (statusLabelRef.current) {
-                const stepIdx = Math.min(
-                  Math.floor((currentVal / 100) * statusSteps.length),
-                  statusSteps.length - 1
-                );
-                statusLabelRef.current.textContent = statusSteps[stepIdx];
-              }
+            if (loaderRef.current && pathRef.current) {
+              loaderRef.current.style.transform = `translateY(${animProps.top}%)`;
+              pathRef.current.setAttribute(
+                "d",
+                `M0 0 L${w} 0 L${w} ${h} Q${w / 2} ${h + animProps.curve} 0 ${h} L0 0`
+              );
             }
           },
         },
-        "-=0.35"
+        "-=0.1"
       )
+      // 3. Flatten curve smoothly as it exits the screen
       .to(
-        progressLineRef.current,
+        animProps,
         {
-          scaleX: 1,
-          duration: minDuration,
+          curve: 0,
+          duration: 0.35,
           ease: "power2.out",
+          onUpdate: () => {
+            if (pathRef.current) {
+              pathRef.current.setAttribute(
+                "d",
+                `M0 0 L${w} 0 L${w} ${h} Q${w / 2} ${h + animProps.curve} 0 ${h} L0 0`
+              );
+            }
+          },
         },
-        "<"
-      )
-      // 4. Subtle pulse bloom at 100%
-      .to(
-        [glyphLeftNodeRef.current, glyphRightNodeRef.current],
-        {
-          scale: 1.2,
-          duration: 0.18,
-          yoyo: true,
-          repeat: 1,
-          ease: "power1.inOut",
-        },
-        "-=0.08"
+        "-=0.2"
       );
-    }, containerRef);
+    }, 320);
 
-    return () => ctx.revert();
-  }, [minDuration, autoDismiss, onComplete]);
+    return () => clearTimeout(exitTimer);
+  }, [dimension, index, visible, onComplete]);
 
-  if (!visible) return null;
+  // Initial SVG path
+  useEffect(() => {
+    if (dimension.width > 0 && dimension.height > 0 && pathRef.current) {
+      const w = dimension.width;
+      const h = dimension.height;
+      pathRef.current.setAttribute(
+        "d",
+        `M0 0 L${w} 0 L${w} ${h} Q${w / 2} ${h} 0 ${h} L0 0`
+      );
+    }
+  }, [dimension]);
+
+  if (!visible || dimension.width === 0) return null;
 
   return (
     <div
-      ref={containerRef}
-      className="fixed inset-0 z-[9999] flex flex-col items-center justify-between p-10 sm:p-14 bg-[#08090C] text-white select-none overflow-hidden"
+      ref={loaderRef}
+      className="fixed inset-0 z-[9999] pointer-events-auto flex items-center justify-center select-none"
       style={{
-        backgroundImage: `
-          radial-gradient(circle at 50% 50%, rgba(35, 66, 255, 0.08) 0%, transparent 60%),
-          linear-gradient(to right, rgba(255, 255, 255, 0.03) 1px, transparent 1px),
-          linear-gradient(to bottom, rgba(255, 255, 255, 0.03) 1px, transparent 1px)
-        `,
-        backgroundSize: "100% 100%, 32px 32px, 32px 32px",
+        width: "100vw",
+        height: "calc(100vh + 300px)",
+        willChange: "transform",
       }}
     >
-      {/* Top Telemetry Header */}
-      <div className="w-full max-w-5xl flex items-center justify-between text-[11px] font-mono tracking-widest text-neutral-500 uppercase">
-        <div className="flex items-center gap-2">
-          <span className="w-1.5 h-1.5 rounded-full bg-[#2342FF] animate-pulse" />
-          <span>OVRA // SYSTEM LOADER</span>
-        </div>
-        <div className="hidden sm:block">ARCH // SOVEREIGN ENGINE</div>
-      </div>
+      {/* SVG Canvas with Curved Bottom Arc */}
+      <svg
+        className="absolute top-0 left-0 w-full pointer-events-none"
+        style={{
+          height: "calc(100vh + 300px)",
+        }}
+      >
+        <path ref={pathRef} fill="#0A0B0E" />
+      </svg>
 
-      {/* Center Kinetic Dual-Node SVG + Micro Counter */}
-      <div className="flex flex-col items-center justify-center gap-7">
-        <div className="relative w-24 h-14 flex items-center justify-center">
-          <svg className="w-full h-full overflow-visible" viewBox="0 0 96 56" fill="none">
-            {/* Glowing signal bridge path */}
-            <path
-              ref={glyphBridgeRef}
-              d="M24 28 C 40 16, 56 40, 72 28"
-              stroke="#2342FF"
-              strokeWidth="2.5"
-              strokeLinecap="round"
-            />
-            {/* Left Node */}
-            <circle
-              ref={glyphLeftNodeRef}
-              cx="24"
-              cy="28"
-              r="7"
-              fill="#FFFFFF"
-              stroke="#2342FF"
-              strokeWidth="3"
-            />
-            {/* Right Node */}
-            <circle
-              ref={glyphRightNodeRef}
-              cx="72"
-              cy="28"
-              r="7"
-              fill="#2342FF"
-              stroke="#FFFFFF"
-              strokeWidth="2.5"
-            />
-          </svg>
-        </div>
-
-        {/* Monospace Precision Counter */}
-        <div className="flex items-baseline gap-1 font-mono tracking-tighter">
-          <span
-            ref={numberRef}
-            className="text-6xl sm:text-7xl font-light text-white tabular-nums tracking-tighter"
-          >
-            00
-          </span>
-          <span className="text-xl sm:text-2xl font-normal text-[#2342FF]">%</span>
-        </div>
-
-        {/* Dynamic Telemetry Status Stream */}
-        <p
-          ref={statusLabelRef}
-          className="text-xs font-mono font-medium tracking-[0.2em] text-neutral-400 uppercase text-center h-4"
-        >
-          INITIALIZING ENGINE CORE
-        </p>
-      </div>
-
-      {/* Bottom Precision Hairline Progress Track */}
-      <div className="w-full max-w-sm flex flex-col gap-3">
-        <div className="w-full h-[2px] bg-white/10 rounded-full overflow-hidden">
-          <div
-            ref={progressLineRef}
-            className="w-full h-full bg-gradient-to-r from-[#2342FF] via-[#5E76FF] to-white shadow-[0_0_12px_#2342FF]"
-          />
-        </div>
-        <div className="flex justify-between items-center text-[10px] font-mono text-neutral-500">
-          <span>LATENCY // 14ms</span>
-          <span>SUBSTRATE // POSTGRESQL</span>
-        </div>
+      {/* Minimal Centered Word with Electric Cobalt Node Dot */}
+      <div
+        ref={textRef}
+        key={index}
+        className="relative z-10 flex items-center gap-3 text-white transition-all duration-200"
+        style={{
+          marginTop: "-150px", // Offset for the extra 300px curve canvas
+        }}
+      >
+        <span className="w-2.5 h-2.5 rounded-full bg-[#2342FF] animate-pulse" />
+        <h2 className="text-3xl sm:text-4xl md:text-5xl font-black tracking-tight text-white font-sans">
+          {WORDS[index]}
+        </h2>
       </div>
     </div>
   );
