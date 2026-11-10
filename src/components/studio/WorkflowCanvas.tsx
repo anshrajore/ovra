@@ -26,6 +26,7 @@ import { AIStudioModal } from "./AIStudioModal";
 import { UniversalNodePickerModal } from "./UniversalNodePickerModal";
 import { OpenAPIImportModal } from "./OpenAPIImportModal";
 import { CanvasHeader } from "./CanvasHeader";
+import { BlankCanvasState } from "./BlankCanvasState";
 import { WorkflowDefinition, WorkflowNodeData } from "@/lib/types/workflow";
 import { defaultExecutionProvider } from "@/lib/simulator/engine";
 import { testNodeExecution } from "@/lib/node-platform";
@@ -656,6 +657,40 @@ export function WorkflowCanvas({ initialWorkflow }: WorkflowCanvasProps) {
     pushHistory([], [], []);
   };
 
+  // Create Starter Node for Blank Canvas
+  const handleCreateBlankWorkflow = () => {
+    const starterNode: WorkflowNodeData = {
+      id: `node_manual_${Date.now()}`,
+      type: "core.manual_trigger",
+      label: "Manual Trigger",
+      subtitle: "Click 'Test Run' to execute",
+      status: "idle",
+      config: {},
+    };
+    const newNode: Node = {
+      id: starterNode.id,
+      type: starterNode.type,
+      position: { x: 380, y: 240 },
+      data: {
+        label: starterNode.label,
+        subtitle: starterNode.subtitle,
+        status: "idle",
+      },
+    };
+    setNodes([newNode]);
+    setWorkflow((wf) => {
+      const updated = {
+        ...wf,
+        nodes: [starterNode],
+        edges: [],
+      };
+      appStore.saveWorkflow(updated);
+      return updated;
+    });
+    setSelectedNodeId(starterNode.id);
+    pushHistory([newNode], [], [starterNode]);
+  };
+
   // Delete Workflow
   const handleDeleteWorkflow = () => {
     appStore.deleteWorkflow(workflow.id);
@@ -689,6 +724,15 @@ export function WorkflowCanvas({ initialWorkflow }: WorkflowCanvasProps) {
         workflowId={workflow.id}
         workflowName={workflow.name}
         workflowVersion={workflow.version || 1}
+        workflowStatus={workflow.status || "draft"}
+        nodesCount={nodes.length}
+        onPublish={() => {
+          setWorkflow((w) => ({
+            ...w,
+            status: "active",
+            version: (w.version || 1) + 1,
+          }));
+        }}
         onUpdateName={(name) => {
           const updated = { ...workflow, name };
           setWorkflow(updated);
@@ -708,6 +752,14 @@ export function WorkflowCanvas({ initialWorkflow }: WorkflowCanvasProps) {
 
       {/* React Flow Viewport */}
       <div className="flex-1 w-full h-full relative">
+        {nodes.length === 0 && (
+          <BlankCanvasState
+            onCreateBlank={handleCreateBlankWorkflow}
+            onExploreTemplates={() => router.push("/templates")}
+            onImportJSON={handleImportJSONClick}
+          />
+        )}
+
         <ReactFlow
           nodes={nodes}
           edges={edges}

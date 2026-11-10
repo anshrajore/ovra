@@ -1,0 +1,34 @@
+Route,File Path,Component Name,Type,Persistence Source,Auth Guard,Truth Status,Notes
+/,src/app/page.tsx,HomePage,Page,None (Public),Public,PARTIAL,Marketing landing page with dynamic navbar auth detection
+/studio,src/app/studio/page.tsx,StudioPage,Page,localStorage + Supabase workflows,Optional / Session,PARTIAL,Canvas editor; currently seeds demo workflow; needs blank-first
+/workflows,src/app/workflows/page.tsx,WorkflowsPage,Page,Supabase workflows + appStore,Session / Workspace,VERIFIED,Lists workflows; allows create / duplicate / open
+/executions,src/app/executions/page.tsx,ExecutionsPage,Page,Supabase executions + in-memory store,Session / Workspace,VERIFIED,Lists execution records and status
+/credentials,src/app/credentials/page.tsx,CredentialsPage,Page,Supabase credential_connections,Session / Workspace,PARTIAL,Credential vault; mock token leases supported
+/integrations,src/app/integrations/page.tsx,IntegrationsPage,Page,Supabase connectors + catalog,Session / Workspace,PARTIAL,Connector directory; connection modals
+/templates,src/app/templates/page.tsx,TemplatesPage,Page,Static catalog,Public,PARTIAL,Opt-in workflow templates; currently doesn't clone into workspace cleanly
+/ai-studio,src/app/ai-studio/page.tsx,AIStudioPage,Page,Supabase knowledge_chunks + mock,Session / Workspace,MOCK,Multi-model workbench & arena; simulated inference
+/testlab,src/app/testlab/page.tsx,TestLabPage,Page,Local runner + /api/v1/test/runtime,Public / Developer,VERIFIED,Executes contract tests and displays results
+/settings,src/app/settings/page.tsx,SettingsPage,Page,Supabase workspaces / profiles,Session / Workspace,PARTIAL,Workspace configuration and member roles
+/developers,src/app/developers/page.tsx,DevelopersPage,Page,Static documentation,Public,STATIC,Developer guide and architecture overview
+/developers/api-keys,src/app/developers/api-keys/page.tsx,ApiKeysPage,Page,localStorage + in-memory,Session / Workspace,MOCK,API key generator with mock secret display
+/developers/webhooks,src/app/developers/webhooks/page.tsx,WebhooksPage,Page,localStorage + in-memory,Session / Workspace,MOCK,Webhook endpoint inspector and test triggers
+/onboarding,src/app/onboarding/page.tsx,OnboardingPage,Page,Supabase user_onboarding,Session,PARTIAL,8-step wizard; should land on blank workspace
+/auth/login,src/app/auth/login/page.tsx,LoginPage,Page,Supabase Auth,Public,VERIFIED,Email/password + Google OAuth + guest mode
+/auth/register,src/app/auth/register/page.tsx,RegisterPage,Page,Supabase Auth,Public,VERIFIED,Sign up with legal acceptance checkboxes
+/auth/callback,src/app/auth/callback/route.ts,GET (Auth Callback),Route Handler,Supabase Auth PKCE,Public,VERIFIED,Exchanges OAuth code for session cookies
+/auth/forgot-password,src/app/auth/forgot-password/page.tsx,ForgotPasswordPage,Page,Supabase Auth,Public,VERIFIED,Password reset email dispatcher
+/auth/reset-password,src/app/auth/reset-password/page.tsx,ResetPasswordPage,Page,Supabase Auth,Session,VERIFIED,Updates user password
+/privacy,src/app/privacy/page.tsx,PrivacyPolicyPage,Page,Static legal,Public,STATIC,DPDP Act & GDPR privacy policy
+/terms,src/app/terms/page.tsx,TermsOfServicePage,Page,Static legal,Public,STATIC,Terms of service and enterprise SaaS terms
+/cookies,src/app/cookies/page.tsx,CookiePolicyPage,Page,Static legal,Public,STATIC,Cookie usage disclosure
+/dpa,src/app/dpa/page.tsx,DpaPage,Page,Static legal,Public,STATIC,Data Processing Addendum
+/acceptable-use,src/app/acceptable-use/page.tsx,AcceptableUsePage,Page,Static legal,Public,STATIC,Acceptable use guidelines
+/api/v1/workflows,src/app/api/v1/workflows/route.ts,GET / POST Workflows,Route Handler,appStore + initialWorkflow,Public/Session,PARTIAL,CRUD workflows; currently returns initialWorkflow
+/api/v1/executions,src/app/api/v1/executions/route.ts,GET / POST Executions,Route Handler,BoundedExecutionSimulator,Public/Session,VERIFIED,Starts workflow executions and returns executionId
+/api/v1/executions/[id]/events,src/app/api/v1/executions/[id]/events/route.ts,SSE Execution Stream,Route Handler,RealtimeProvider,Public/Session,VERIFIED,Streams Server-Sent Events for real-time telemetry
+/api/v1/credentials,src/app/api/v1/credentials/route.ts,GET / POST Credentials,Route Handler,in-memory vault,Public/Session,PARTIAL,Lists and stores masked credentials
+/api/v1/connectors/openapi/import,src/app/api/v1/connectors/openapi/import/route.ts,POST OpenAPI Import,Route Handler,OpenApiParser,Public/Session,VERIFIED,Converts Swagger/OpenAPI into OVRA node definitions
+/api/v1/nodes,src/app/api/v1/nodes/route.ts,GET Node Manifests,Route Handler,nodeRegistry,Public,VERIFIED,Returns catalogue of official node manifests
+/api/v1/nodes/test,src/app/api/v1/nodes/test/route.ts,POST Node Test,Route Handler,nodeRegistry / runtimeNodeRegistry,Public/Session,VERIFIED,Executes a single node with mock context
+/api/v1/test/runtime,src/app/api/v1/test/runtime/route.ts,GET Runtime Golden Tests,Route Handler,runRuntimeContractTests,Public/Internal,VERIFIED,Runs 46 automated contract tests
+/api/v1/webhooks/[triggerId],src/app/api/v1/webhooks/[triggerId]/route.ts,POST Webhook Ingest,Route Handler,RealWorkflowEngine / Simulator,Public,VERIFIED,Ingests external webhooks and triggers workflow DAG

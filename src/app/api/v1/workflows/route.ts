@@ -4,9 +4,9 @@ import { initialWorkflow } from "@/lib/data/initial-workflow";
 export async function GET() {
   return NextResponse.json({
     success: true,
-    data: [initialWorkflow],
+    data: [],
     meta: {
-      total: 1,
+      total: 0,
       workspaceId: "ws_team_workspace",
       timestamp: new Date().toISOString(),
     },

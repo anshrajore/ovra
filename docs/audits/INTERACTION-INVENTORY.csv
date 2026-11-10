@@ -1,0 +1,35 @@
+Route,Component,Control Label / Action,Trigger Type,Handler / Endpoint,Persistence,Truth Status,Remediation Required
+/,PlumbArcaNavbar,Open Studio,Link / Button,router.push('/studio'),Session check,VERIFIED,None (Dynamic auth detection works)
+/,PlumbArcaNavbar,Sign In,Link,router.push('/auth/login'),None,VERIFIED,None
+/,PlumbArcaNavbar,Account Dropdown -> Sign Out,Button,supabase.auth.signOut(),localStorage / Cookie,VERIFIED,None
+/,LandingHero,Start Building Free,Button,router.push('/studio'),None,VERIFIED,None
+/,LandingHero,Explore Platform,Button,smooth scroll to features,DOM scroll,VERIFIED,Replace with GSAP ScrollTo
+/,LandingNavbar,Solutions / Pricing Nav Links,Link,anchor #links,None,PARTIAL,Missing dedicated pricing page; links to sections
+/studio,Header,Execute Workflow,Button,engine.startExecution(),in-memory + SSE,VERIFIED,None
+/studio,Header,Workflow Title Edit,Input,handleUpdateTitle(),appStore / localStorage,VERIFIED,Persist to Supabase
+/studio,Header,Publish,Button,handlePublish(),appStore / Supabase,PARTIAL,Requires validation errors before publish
+/studio,Header,Save,Button,handleSave(),appStore / Supabase,VERIFIED,None
+/studio,Header,AI Studio,Button,router.push('/ai-studio'),None,VERIFIED,None
+/studio,BottomBar,Add Node (+),Button,setIsNodeLibraryOpen(true),State,VERIFIED,Opens Universal Node Picker
+/studio,BottomBar,Zoom In / Out / Fit,Buttons,reactflow.zoomIn/Out/fitView,ReactFlow state,VERIFIED,None
+/studio,BottomBar,Minimap Toggle,Button,setShowMinimap(!show),State,VERIFIED,None
+/studio,NodeInspectorModal,Run Single Step,Button,onRunSingleNode(),/api/v1/nodes/test,VERIFIED,None
+/studio,NodeInspectorModal,Update Config,Input / Form,onUpdateConfig(),appStore,VERIFIED,None
+/studio,NodeInspectorModal,Duplicate Node,Button,onDuplicateNode(),ReactFlow state,VERIFIED,None
+/studio,NodeInspectorModal,Delete Node,Button,onDeleteNode(),ReactFlow state,VERIFIED,None
+/studio,NodeInspectorModal,Tab Params / IO / JSON,Tabs,setActiveTab(),State,VERIFIED,None
+/studio,WorkflowCanvas,Blank State Create Workflow,Button,handleCreateBlank(),None,MISSING,Currently auto-loads demo workflow; must implement blank-first CTA
+/studio,WorkflowCanvas,Blank State Use Template,Button,handleOpenTemplates(),None,MISSING,Must add explicit template CTA
+/studio,WorkflowCanvas,Blank State Import JSON,Button,handleImportJson(),None,MISSING,Must add JSON import modal CTA
+/workflows,WorkflowsPage,New Workflow,Button,createNewWorkflow(),appStore + Supabase,VERIFIED,Creates empty workflow record
+/workflows,WorkflowsPage,Duplicate Workflow,Button,duplicateWorkflow(),appStore,VERIFIED,None
+/workflows,WorkflowsPage,Delete Workflow,Button,deleteWorkflow(),appStore,VERIFIED,None
+/templates,TemplatesPage,Use Template,Button,cloneTemplate(),appStore,PARTIAL,Needs to clone into active workspace and redirect to /studio
+/credentials,CredentialsPage,Add Credential,Button,openModal(),Supabase,PARTIAL,Form adds credential; needs secret masking
+/integrations,IntegrationsPage,Connect Integration,Button,openConnectModal(),Supabase,PARTIAL,Only Slack & Sheets wired to real endpoints
+/ai-studio,AIStudioPage,Execute Agent Prompt,Button,handleTestWorkbench(),Simulated timeout,MOCK,Needs live Gemini API key connection
+/ai-studio,AIStudioPage,Attach to Canvas,Button,router.push('/studio'),None,PARTIAL,Should serialize prompt into node on canvas
+/testlab,TestLabPage,Run Test Suite,Button,fetch('/api/v1/test/runtime'),Test runner,VERIFIED,Runs 46 automated contract tests live
+/settings,SettingsPage,Save Settings,Button,handleSave(),Supabase,PARTIAL,Updates workspace state
+/developers/api-keys,ApiKeysPage,Create Key,Button,handleCreate(),in-memory,MOCK,Needs durable database generation
+/developers/webhooks,WebhooksPage,Trigger Test Webhook,Button,fetch('/api/v1/webhooks/...'),Real engine,VERIFIED,None

@@ -195,6 +195,7 @@ export function Arca3DHero() {
 
             {/* Card 1: Left Tilted Dark Pass Card (Luca Ferrante style from Image 3) */}
             <div
+              data-gsap-card="left"
               className="absolute left-0 sm:left-4 top-6 sm:top-10 w-[240px] sm:w-[270px] rounded-3xl bg-[#0E1015] border border-white/20 p-5 text-white shadow-2xl transition-all duration-300 hover:scale-105 z-20"
               style={{
                 transform: "rotate(-12deg) translateZ(40px)",
@@ -233,6 +234,7 @@ export function Arca3DHero() {
 
             {/* Card 2: Right Tilted Glassmorphic Node Card (from Image 3 & Image 2) */}
             <div
+              data-gsap-card="right"
               className="absolute right-0 sm:right-6 top-16 sm:top-20 w-[230px] sm:w-[260px] rounded-3xl bg-[#141721]/95 backdrop-blur-xl border border-white/25 p-5 text-white shadow-2xl transition-all duration-300 hover:scale-105 z-10"
               style={{
                 transform: "rotate(10deg) translateZ(20px)",
@@ -264,6 +266,7 @@ export function Arca3DHero() {
 
             {/* Center Interactive Mini DAG (Image 1 & 2 integration) */}
             <div
+              data-gsap-card="center"
               className="relative w-[280px] sm:w-[320px] rounded-3xl bg-[#090A0D] border-2 border-white/30 p-5 text-white shadow-2xl z-30"
               style={{
                 transform: "translateZ(80px)",

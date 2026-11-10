@@ -6,10 +6,14 @@ import { TactileBadgeRack } from "@/components/landing/TactileBadgeRack";
 import { LandingApiInspector } from "@/components/landing/LandingApiInspector";
 import { ArcaFooter } from "@/components/landing/ArcaFooter";
 import { ScrollRevealObserver } from "@/components/landing/ScrollRevealObserver";
+import { LandingMotion } from "@/components/marketing/LandingMotion";
 
 export default function LandingPage() {
   return (
     <main className="w-full min-h-screen bg-[#08090C] text-white flex flex-col overflow-x-hidden selection:bg-[#2342FF] selection:text-white">
+      {/* GSAP Motion System & ScrollTrigger Controller */}
+      <LandingMotion />
+
       {/* Scroll Triggered Entrance Observer */}
       <ScrollRevealObserver />
 

@@ -27,6 +27,9 @@ interface CanvasHeaderProps {
   workflowId: string;
   workflowName: string;
   workflowVersion: number;
+  workflowStatus?: "active" | "draft" | "archived" | "paused";
+  nodesCount?: number;
+  onPublish?: () => void;
   onUpdateName?: (name: string) => void;
   onTestRun?: () => void;
   onOpenCode?: () => void;
@@ -44,6 +47,9 @@ export function CanvasHeader({
   workflowId,
   workflowName,
   workflowVersion,
+  workflowStatus = "draft",
+  nodesCount = 0,
+  onPublish,
   onUpdateName,
   onTestRun,
   onOpenCode,
@@ -87,7 +93,12 @@ export function CanvasHeader({
   };
 
   const handlePublish = () => {
+    if (nodesCount === 0) {
+      alert("Cannot publish an empty workflow. Please add at least one node to your pipeline first.");
+      return;
+    }
     const newVer = appStore.publishWorkflowVersion(workflowId);
+    onPublish?.();
     setIsPublished(true);
     setTimeout(() => setIsPublished(false), 3000);
   };
@@ -114,7 +125,7 @@ export function CanvasHeader({
                 onBlur={handleBlur}
                 onKeyDown={(e) => e.key === "Enter" && handleBlur()}
                 autoFocus
-                className="text-base font-bold text-gray-950 bg-gray-100 px-2 py-0.5 rounded border border-ovra-orange outline-none"
+                className="text-base font-bold text-gray-950 bg-gray-100 px-2 py-0.5 rounded border border-[#2342FF] outline-none"
               />
             ) : (
               <div className="flex items-center gap-2 group">
@@ -132,9 +143,19 @@ export function CanvasHeader({
             )}
 
             {/* Version & Status Badge */}
-            <div className="flex items-center gap-1.5 px-2.5 py-0.5 bg-emerald-50 border border-emerald-200/80 rounded-full text-[11px] font-semibold text-emerald-700">
-              <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
-              v{workflowVersion}.0 Active
+            <div
+              className={`flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-[11px] font-semibold border ${
+                workflowStatus === "active"
+                  ? "bg-emerald-50 border-emerald-200/80 text-emerald-700"
+                  : "bg-amber-50 border-amber-200/80 text-amber-700"
+              }`}
+            >
+              <span
+                className={`w-1.5 h-1.5 rounded-full ${
+                  workflowStatus === "active" ? "bg-emerald-500 animate-pulse" : "bg-amber-500"
+                }`}
+              />
+              v{workflowVersion}.0 {workflowStatus === "active" ? "Active" : "Draft"}
             </div>
 
             {/* Dynamic Reactive Saved indicator */}
